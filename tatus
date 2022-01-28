@@ -1,0 +1,110 @@
+[33mcommit becfdc9f73dc701877b354826476578d6b929e82[m[33m ([m[1;36mHEAD -> [m[1;32mlecture-1[m[33m, [m[1;31morigin/lecture-1[m[33m)[m
+Author: Dmitry <20125dimanovogrodsky@gmail.com>
+Date:   Tue Jan 25 16:21:11 2022 +0300
+
+    Task 1.6: Implement some tests and fixed images
+
+[33mcommit 7ffe55ea8dceffbd64e0e05d548382723b473859[m
+Author: Dmitry <20125dimanovogrodsky@gmail.com>
+Date:   Tue Jan 25 14:38:13 2022 +0300
+
+    Task 1.5: Implement ProductDao
+
+[33mcommit fde489c9d74ac388be24a78f3e0b1af0c39f1258[m[33m ([m[1;31morigin/dependabot/maven/junit-junit-4.13.1[m[33m)[m
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Tue Oct 13 07:18:48 2020 +0000
+
+    Bump junit from 4.12 to 4.13.1
+    
+    Bumps [junit](https://github.com/junit-team/junit4) from 4.12 to 4.13.1.
+    - [Release notes](https://github.com/junit-team/junit4/releases)
+    - [Changelog](https://github.com/junit-team/junit4/blob/main/doc/ReleaseNotes4.12.md)
+    - [Commits](https://github.com/junit-team/junit4/compare/r4.12...r4.13.1)
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+[33mcommit 0dd843e8e3dad0734ea05868e747b7f209febce6[m
+Author: Andrei Osipenko <andrei.osipenko@expert-soft.by>
+Date:   Wed Jul 10 16:27:55 2019 +0300
+
+    Added run-war comments
+
+[33mcommit e05a442642304a1525abd00ecb658282dd2781b9[m
+Author: Andrei Osipenko <andrei.osipenko@expert-soft.by>
+Date:   Wed Mar 13 13:25:31 2019 +0300
+
+    Implemented master tag.
+
+[33mcommit 333f4fca3258efe2464d280377e86b45c7029f5d[m
+Author: Andrei Osipenko <aosipenko@tacitknowledge.com>
+Date:   Wed Nov 14 16:45:06 2018 +0300
+
+    Added header logo
+
+[33mcommit 65d8d6970a9027016886cf1ccace541bb81396f4[m
+Author: Andrei Osipenko <aosipenko@tacitknowledge.com>
+Date:   Mon Nov 5 18:24:17 2018 +0300
+
+    Fixed demodata
+
+[33mcommit dc336b10992aab1f2bb55168c073dfa7cc065152[m
+Author: Andrei Osipenko <aosipenko@tacitknowledge.com>
+Date:   Mon Nov 5 18:11:21 2018 +0300
+
+    Improved styles
+
+[33mcommit 7670d2f75e534688285328e89a1a84dffdde66d7[m
+Author: Andrei Osipenko <aosipenko@tacitknowledge.com>
+Date:   Mon Nov 5 10:28:18 2018 +0300
+
+    Renamed Product DAO
+
+[33mcommit 6b9088fada52511608d480525ee08bf1bfd39b0f[m
+Author: Andrei Osipenko <aosipenko@tacitknowledge.com>
+Date:   Mon Nov 5 10:04:39 2018 +0300
+
+    Added external CSS.
+    Added product images.
+    Added test stubs.
+
+[33mcommit da60c28863c791ad9a3c7ed6cf7427d50da09907[m
+Merge: 9df0978 f7b2c8e
+Author: Andrew Osipenko <dev7000@gmail.com>
+Date:   Thu Aug 23 12:21:52 2018 +0300
+
+    Merge pull request #8 from buevich-dmitry/add_support_for_java_8
+    
+    Add support for java 8.
+
+[33mcommit f7b2c8e5cccdd5047b15b4be329a50d21e85bf04[m
+Author: buevich-dmitry <buevichd@gmail.com>
+Date:   Wed Aug 22 18:05:51 2018 +0300
+
+    Add support for java 8.
+
+[33mcommit 9df097806daafffa8042240f2504a6b4f9e06fde[m
+Merge: bcf8bc0 3070727
+Author: Andrew Osipenko <dev7000@gmail.com>
+Date:   Mon Aug 20 11:42:42 2018 +0300
+
+    Merge pull request #4 from buevich-dmitry/master
+    
+    Update .gitignore
+
+[33mcommit 30707277328719bf7b0d3d249e3b74622a895f1b[m
+Author: buevich-dmitry <buevichd@gmail.com>
+Date:   Mon Aug 20 11:08:22 2018 +0300
+
+    Update .gitignore
+
+[33mcommit bcf8bc05ffceef1073f88c2dea1b67a41c970b99[m
+Author: Andrei Osipenko <aosipenko@tacitknowledge.com>
+Date:   Fri Aug 17 11:56:55 2018 +0300
+
+    Added Product stubs
+
+[33mcommit 1e7f652fa6062ad26f95c3d3323633ef777f6884[m
+Author: Andrei Osipenko <andrei.osipenko@expert-soft.by>
+Date:   Wed Aug 8 19:02:08 2018 +0300
+
+    Initial creation

@@ -13,7 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -28,6 +30,8 @@ public class ProductListPageServletTest {
     @Mock
     private ServletConfig config;
 
+    private final String PRODUCTS_ATTRIBUTE = "products";
+
     private ProductListPageServlet servlet = new ProductListPageServlet();
 
     @Before
@@ -40,6 +44,6 @@ public class ProductListPageServletTest {
     public void testDoGet() throws ServletException, IOException {
         servlet.doGet(request, response);
         verify(requestDispatcher).forward(request, response);
-        verify(request).setAttribute(eq("products"), any());
+        verify(request).setAttribute(eq(PRODUCTS_ATTRIBUTE), any());
     }
 }

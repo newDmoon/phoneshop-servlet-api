@@ -11,7 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class ProductListPageServlet extends HttpServlet {
+    private final String PRODUCTS_ATTRIBUTE = "products";
+    private final String PRODUCT_LIST_PAGE = "/WEB-INF/pages/productList.jsp";
     private ProductDao productDao;
+
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -21,7 +24,7 @@ public class ProductListPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("products", productDao.findProducts());
-        request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
+        request.setAttribute(PRODUCTS_ATTRIBUTE, productDao.findProducts());
+        request.getRequestDispatcher(PRODUCT_LIST_PAGE).forward(request, response);
     }
 }
