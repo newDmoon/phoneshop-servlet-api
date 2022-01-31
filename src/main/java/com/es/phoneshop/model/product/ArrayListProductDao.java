@@ -26,9 +26,9 @@ public class ArrayListProductDao implements ProductDao {
                 return products.stream()
                         .filter(product -> id.equals(product.getId()))
                         .findAny()
-                        .get();
+                        .orElseThrow(NoSuchElementException::new);
             } else {
-                throw new NoSuchElementException();
+                throw new IllegalArgumentException();
             }
         }
     }
@@ -51,32 +51,28 @@ public class ArrayListProductDao implements ProductDao {
                     product.setId(maxId++);
                     products.add(product);
                 } else {
-                    try {
+                    if(products.stream()
+                            .anyMatch(productElem -> product.getId().equals(productElem.getId()))){
                         products.set(products.indexOf(products.stream()
-                                .filter(product1 -> product.getId().equals(product1.getId()))
+                                .filter(productElem -> product.getId().equals(productElem.getId()))
                                 .findAny()
-                                .get()
-                        ), product);
-                    } catch (NoSuchElementException e) {
+                                .get()), product);
+                    }
+                    else {
                         products.add(product);
                     }
                 }
-            } else throw new NoSuchElementException();
+            } else throw new IllegalArgumentException();
         }
     }
 
     @Override
-    public void delete(Long id) throws NoSuchElementException {
+    public void delete(Long id) {
         synchronized (lock) {
             if (id != null) {
-                products.remove(
-                        products.stream()
-                                .filter(product -> id.equals(product.getId()))
-                                .findAny()
-                                .get()
-                );
+                products.removeIf(product -> id.equals(product.getId()));
             } else {
-                throw new NoSuchElementException();
+                throw new IllegalArgumentException();
             }
         }
     }
