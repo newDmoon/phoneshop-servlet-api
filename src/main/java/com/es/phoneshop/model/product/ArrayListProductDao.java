@@ -2,14 +2,10 @@ package com.es.phoneshop.model.product;
 
 import com.es.phoneshop.model.product.util.ProductComparator;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Currency;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ArrayListProductDao implements ProductDao {
     private final Object lock = new Object();
@@ -22,12 +18,12 @@ public class ArrayListProductDao implements ProductDao {
         maxId = products.size();
     }
 
-    public static ProductDao getInstance(){
+    public static ProductDao getInstance() {
         ProductDao localInstance = instance;
-        if(localInstance == null){
-            synchronized (ProductDao.class){
+        if (localInstance == null) {
+            synchronized (ProductDao.class) {
                 localInstance = instance;
-                if (localInstance == null){
+                if (localInstance == null) {
                     instance = localInstance = new ArrayListProductDao();
                 }
             }
@@ -35,7 +31,6 @@ public class ArrayListProductDao implements ProductDao {
         }
         return instance;
     }
-
 
 
     @Override
@@ -59,7 +54,7 @@ public class ArrayListProductDao implements ProductDao {
                     .filter(product -> query == null || query.isEmpty() || product.getDescription().contains(query))
                     .filter(product -> product.getPrice() != null)
                     .filter(product -> product.getStock() > 0)
-                    .sorted(ProductComparator.compare(products,sortField, sortOrder))
+                    .sorted(ProductComparator.compare(products, sortField, sortOrder))
                     .collect(Collectors.toList());
         }
     }
