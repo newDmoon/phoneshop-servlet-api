@@ -91,5 +91,7 @@ public class ArrayListProductDao implements ProductDao {
             }
         }
     }
-
+    // add functional search
+    // add views task 2.5
+    // ProductBuilder usage
 }

@@ -40,7 +40,7 @@
   </error-page>
 
   <error-page>
-    <location>/WEB-INF/pages/error.jsp</location>
+    <location>/WEB-INF/pages/errorStatus500.jsp</location>
     <error-code>500</error-code>
   </error-page>
 

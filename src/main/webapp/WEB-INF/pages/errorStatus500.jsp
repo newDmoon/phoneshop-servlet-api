@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
-<tags:master pageTitle="Error 500 handler">
+<tags:master pageTitle="Error Status 500">
     <h1>
           Page not found.
     </h1>
