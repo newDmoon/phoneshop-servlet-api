@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.NoSuchElementException;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
@@ -31,12 +30,18 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void shouldFindProductsNoResults() {
-     //   assertFalse(productDao.findProducts().isEmpty());
+        assertTrue(productDao.findProducts(codeTest,null, null).isEmpty());
     }
 
     @Test
-    public void shouldGetProductWhen() {
-        Product productTest = new Product(codeTest, descriptionTest, priceTest, USD, stockTest, imageUrlTest);
+    public void shouldGetProductWhenGoodInput() {
+        Product productTest = new ProductBuilderImpl().setCode(codeTest)
+                .setDescription(descriptionTest)
+                .setPrice(priceTest)
+                .setCurrency(USD)
+                .setStock(stockTest)
+                .setImageUrl(imageUrlTest)
+                .build();
         productDao.save(productTest);
         assertNotNull(productDao.getProduct(productTest.getId()));
     }
@@ -50,7 +55,13 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void shouldSaveProductIfExistsWithIdMoreThanZero() {
-        Product productTest = new Product(codeTest, descriptionTest, priceTest, USD, stockTest, imageUrlTest);
+        Product productTest = new ProductBuilderImpl().setCode(codeTest)
+                .setDescription(descriptionTest)
+                .setPrice(priceTest)
+                .setCurrency(USD)
+                .setStock(stockTest)
+                .setImageUrl(imageUrlTest)
+                .build();
         productDao.save(productTest);
         assertTrue(productTest.getId() > 0);
         Product result = productDao.getProduct(Long.valueOf(productTest.getId()));
@@ -59,7 +70,13 @@ public class ArrayListProductDaoTest {
 
     @Test(expected = NoSuchElementException.class)
     public void shouldDeleteProductIfExistsThrowsException() {
-        Product productTest = new Product(codeTest, descriptionTest, priceTest, USD, stockTest, imageUrlTest);
+        Product productTest = new ProductBuilderImpl().setCode(codeTest)
+                .setDescription(descriptionTest)
+                .setPrice(priceTest)
+                .setCurrency(USD)
+                .setStock(stockTest)
+                .setImageUrl(imageUrlTest)
+                .build();
         productDao.save(productTest);
         productDao.delete(productTest.getId());
         productDao.getProduct(productTest.getId());

@@ -4,35 +4,28 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
-<tags:master pageTitle="Product Details">
-    <p>
+<tags:master pageTitle="Product Price History">
+    <h1>
+        Price History
+    </h1>
+    <h2>
             ${product.description}
-    </p>
+    </h2>
     <table>
         <tr>
-            <td>Image</td>
-            <td>
-                <img src="${product.imageUrl}">
-            </td>
+            <th>Start date</th>
+            <th>Price</th>
         </tr>
+        <c:forEach var="productPriceHistoryItem" items="${product.priceHistoryItemList}">
         <tr>
-            <td>Code</td>
             <td>
-                    ${product.code}
+                <fmt:formatDate value="${productPriceHistoryItem.date}" dateStyle="medium"/>
             </td>
-        </tr>
-        <tr>
-            <td>Stock</td>
             <td>
-                    ${product.stock}
-            </td>
-        </tr>
-        <tr>
-            <td>Price</td>
-            <td>
-                <fmt:formatNumber value="${product.price}" type="currency"
+                <fmt:formatNumber value="${productPriceHistoryItem.price}" type="currency"
                                   currencySymbol="${product.currency.symbol}"/>
             </td>
-        </tr>
+            </c:forEach>
+
     </table>
 </tags:master>

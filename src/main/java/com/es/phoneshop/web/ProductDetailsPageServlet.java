@@ -13,6 +13,7 @@ import java.io.IOException;
 public class ProductDetailsPageServlet extends HttpServlet {
     private final String PRODUCT_ATTRIBUTE = "product";
     private final String PRODUCT_DETAILS_PAGE = "/WEB-INF/pages/product.jsp";
+    private final int START_INDEX_WITHOUT_SLASH = 1;
     private ProductDao productDao;
 
 
@@ -24,7 +25,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String productId = request.getPathInfo().substring(1);
+        String productId = request.getPathInfo().substring(START_INDEX_WITHOUT_SLASH);
         request.setAttribute(PRODUCT_ATTRIBUTE, productDao.getProduct(Long.valueOf(productId)));
         request.getRequestDispatcher(PRODUCT_DETAILS_PAGE).forward(request, response);
     }

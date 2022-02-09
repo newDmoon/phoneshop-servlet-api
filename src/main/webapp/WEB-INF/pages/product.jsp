@@ -5,9 +5,9 @@
 
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
 <tags:master pageTitle="Product Details">
-    <p>
-            ${product.description}
-    </p>
+    <h1>
+        ${product.description}
+    </h1>
     <table>
         <tr>
             <td>Image</td>

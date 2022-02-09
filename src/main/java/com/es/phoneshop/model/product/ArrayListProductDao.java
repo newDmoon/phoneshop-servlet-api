@@ -1,11 +1,14 @@
 package com.es.phoneshop.model.product;
 
 import com.es.phoneshop.model.product.util.ProductComparator;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+
+// TODO diff packages
 
 public class ArrayListProductDao implements ProductDao {
     private final Object lock = new Object();
@@ -19,19 +22,15 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     public static ProductDao getInstance() {
-        ProductDao localInstance = instance;
-        if (localInstance == null) {
+        if (instance == null) {
             synchronized (ProductDao.class) {
-                localInstance = instance;
-                if (localInstance == null) {
-                    instance = localInstance = new ArrayListProductDao();
+                if (instance == null) {
+                    instance = new ArrayListProductDao();
                 }
             }
-            instance = new ArrayListProductDao();
         }
         return instance;
     }
-
 
     @Override
     public Product getProduct(Long id) throws NoSuchElementException {
@@ -51,7 +50,7 @@ public class ArrayListProductDao implements ProductDao {
     public List<Product> findProducts(String query, SortField sortField, SortOrder sortOrder) {
         synchronized (lock) {
             return products.stream()
-                    .filter(product -> query == null || query.isEmpty() || product.getDescription().contains(query))
+                    .filter(product -> StringUtils.isEmpty(query) || product.getDescription().contains(query))
                     .filter(product -> product.getPrice() != null)
                     .filter(product -> product.getStock() > 0)
                     .sorted(ProductComparator.compare(products, sortField, sortOrder))
@@ -91,7 +90,4 @@ public class ArrayListProductDao implements ProductDao {
             }
         }
     }
-    // add functional search
-    // add views task 2.5
-    // ProductBuilder usage
 }

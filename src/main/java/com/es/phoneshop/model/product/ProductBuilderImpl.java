@@ -2,9 +2,16 @@ package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.List;
 
 public class ProductBuilderImpl implements ProductBuilder {
     Product product = new Product();
+
+    @Override
+    public ProductBuilder setPriceHistory(List<PriceHistoryItem> priceHistoryItems) {
+        product.setPriceHistoryItemList(priceHistoryItems);
+        return this;
+    }
 
     @Override
     public ProductBuilder setId(Long id) {
