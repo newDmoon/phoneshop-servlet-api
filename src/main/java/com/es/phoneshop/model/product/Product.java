@@ -92,4 +92,16 @@ public class Product {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    @Override
+    public String toString() {
+        return String.join(" ",
+                id.toString(),
+                code,
+                description,
+                price.toString(),
+                currency.toString(),
+                String.valueOf(stock),
+                imageUrl);
+    }
 }

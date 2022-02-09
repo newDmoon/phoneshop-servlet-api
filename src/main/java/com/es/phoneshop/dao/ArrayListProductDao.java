@@ -1,14 +1,15 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.dao;
 
+import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.util.ProductComparator;
+import com.es.phoneshop.model.product.util.SortField;
+import com.es.phoneshop.model.product.util.SortOrder;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-
-// TODO diff packages
 
 public class ArrayListProductDao implements ProductDao {
     private final Object lock = new Object();
