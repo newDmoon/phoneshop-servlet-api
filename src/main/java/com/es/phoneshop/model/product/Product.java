@@ -1,16 +1,24 @@
 package com.es.phoneshop.model.product;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.List;
+import java.util.Objects;
 
-public class Product {
+public class Product implements Serializable {
     private Long id;
     private String code;
     private String description;
-    /** null means there is no price because the product is outdated or new */
+    /**
+     * null means there is no price because the product is outdated or new
+     */
     private BigDecimal price;
-    /** can be null if the price is null */
+    /**
+     * can be null if the price is null
+     */
     private Currency currency;
     private int stock;
     private String imageUrl;
@@ -27,6 +35,30 @@ public class Product {
         this.stock = stock;
         this.imageUrl = imageUrl;
         this.priceHistoryItemList = priceHistoryItemList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Product product = (Product) o;
+        return stock == product.stock
+                && Objects.equals(id, product.id)
+                && Objects.equals(code, product.code)
+                && Objects.equals(description, product.description)
+                && Objects.equals(price, product.price)
+                && Objects.equals(currency, product.currency)
+                && Objects.equals(imageUrl, product.imageUrl)
+                && Objects.equals(priceHistoryItemList, product.priceHistoryItemList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, code, description, price, currency, stock, imageUrl, priceHistoryItemList);
     }
 
     public List<PriceHistoryItem> getPriceHistoryItemList() {
@@ -91,5 +123,17 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    @Override
+    public String toString() {
+        return String.join(StringUtils.SPACE,
+                id.toString(),
+                code,
+                description,
+                price.toString(),
+                currency.toString(),
+                String.valueOf(stock),
+                imageUrl);
     }
 }

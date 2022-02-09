@@ -1,8 +1,6 @@
 package com.es.phoneshop.model.product.util;
 
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.SortField;
-import com.es.phoneshop.model.product.SortOrder;
 
 import java.util.Comparator;
 import java.util.List;
