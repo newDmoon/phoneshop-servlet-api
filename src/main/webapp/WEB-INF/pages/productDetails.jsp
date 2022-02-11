@@ -11,7 +11,7 @@
     </p>
     <c:if test="${not empty error}">
         <div class="error">
-                There was an error adding to cart
+            There was an error adding to cart
         </div>
     </c:if>
     <c:if test="${not empty param.message}">
@@ -52,7 +52,8 @@
             <tr>
                 <td>Quantity</td>
                 <td>
-                    <input class="quantity" name="quantity" value="${not empty error ? param.quantity : 1}" placeholder="Input quantity">
+                    <input class="quantity" name="quantity" value="${not empty error ? param.quantity : 1}"
+                           placeholder="Input quantity">
                     <c:if test="${not empty error}">
                         <div class="error">
                                 ${error}
@@ -65,4 +66,26 @@
             <button>Add to cart</button>
         </p>
     </form>
+    <c:if test="${not empty recentlyViewedProducts}">
+        <div class="recentlyViewedProducts">
+            <h3>Recently viewed</h3>
+            <table>
+                <tr>
+                    <c:forEach var="recentlyViewedProduct" items="${recentlyViewedProducts}">
+                        <td>
+                            <div><img src="${recentlyViewedProduct.imageUrl}"/></div>
+                            <div><a href="${pageContext.servletContext.contextPath}/products/${product.id}">
+                                    ${product.description}
+                            </a></div>
+                            <div>
+                                <a href="${pageContext.servletContext.contextPath}/products/priceHistory/${product.id}">
+                                    <fmt:formatNumber value="${product.price}" type="currency"
+                                                      currencySymbol="${product.currency.symbol}"/>
+                                </a></div>
+                        </td>
+                    </c:forEach>
+                </tr>
+            </table>
+        </div>
+    </c:if>
 </tags:master>

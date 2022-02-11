@@ -46,4 +46,26 @@
       </tr>
     </c:forEach>
   </table>
+  <c:if test="${not empty recentlyViewedProducts}">
+    <div class="recentlyViewedProducts">
+      <h3>Recently viewed</h3>
+      <table>
+        <tr>
+          <c:forEach var="recentlyViewedProduct" items="${recentlyViewedProducts}">
+            <td>
+              <div><img src="${recentlyViewedProduct.imageUrl}"/></div>
+              <div><a href="${pageContext.servletContext.contextPath}/products/${recentlyViewedProduct.id}">
+                  ${recentlyViewedProduct.description}
+              </a></div>
+              <div>
+                <a href="${pageContext.servletContext.contextPath}/products/priceHistory/${recentlyViewedProduct.id}">
+                  <fmt:formatNumber value="${recentlyViewedProduct.price}" type="currency"
+                                    currencySymbol="${recentlyViewedProduct.currency.symbol}"/>
+                </a></div>
+            </td>
+          </c:forEach>
+        </tr>
+      </table>
+    </div>
+  </c:if>
 </tags:master>

@@ -1,6 +1,7 @@
 package com.es.phoneshop.model.cart;
 
 import com.es.phoneshop.model.product.Product;
+import org.apache.commons.lang3.StringUtils;
 
 public class CartItem {
     private Product product;
@@ -8,6 +9,14 @@ public class CartItem {
 
     public CartItem(Product product, int quantity) {
         this.product = product;
+        this.quantity = quantity;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
@@ -21,6 +30,6 @@ public class CartItem {
 
     @Override
     public String toString() {
-        return String.join(" ", product.getId().toString(), String.valueOf(quantity));
+        return String.join(StringUtils.SPACE, product.toString(), String.valueOf(quantity));
     }
 }

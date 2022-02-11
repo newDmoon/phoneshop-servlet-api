@@ -1,5 +1,7 @@
 package com.es.phoneshop.model.cart;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,9 +16,8 @@ public class Cart {
         return cartItems;
     }
 
-
     @Override
     public String toString() {
-        return String.join(" ", cartItems.toString());
+        return String.join(StringUtils.SPACE, cartItems.toString());
     }
 }
