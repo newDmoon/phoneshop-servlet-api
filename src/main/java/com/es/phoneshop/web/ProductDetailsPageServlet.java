@@ -11,7 +11,6 @@ import com.es.phoneshop.service.product.RecentlyViewedProductsService;
 import com.es.phoneshop.service.product.impl.RecentlyViewedProductsServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -49,7 +48,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         currentLocale = Locale.getDefault();
-        messages = ResourceBundle.getBundle(BASE_NAME_PATH , currentLocale);
+        messages = ResourceBundle.getBundle(BASE_NAME_PATH, currentLocale);
         productDao = ArrayListProductDao.getInstance();
         cartService = CartSessionServiceImpl.getInstance();
         recentlyViewedProductsService = RecentlyViewedProductsServiceImpl.getInstance();

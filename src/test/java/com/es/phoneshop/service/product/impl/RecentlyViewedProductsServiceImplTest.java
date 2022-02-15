@@ -53,7 +53,6 @@ public class RecentlyViewedProductsServiceImplTest {
     @Before
     public void setup() {
         productDao = ArrayListProductDao.getInstance();
-//        when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
         when(request.getSession()).thenReturn(session);
         recentlyViewedProductsService = RecentlyViewedProductsServiceImpl.getInstance();
     }
