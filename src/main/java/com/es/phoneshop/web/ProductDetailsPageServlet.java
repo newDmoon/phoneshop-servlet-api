@@ -11,6 +11,7 @@ import com.es.phoneshop.service.product.RecentlyViewedProductsService;
 import com.es.phoneshop.service.product.impl.RecentlyViewedProductsServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -23,19 +24,20 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+
 public class ProductDetailsPageServlet extends HttpServlet {
     private final String PRODUCT_ATTRIBUTE = "product";
-    private final String CART_ATTRIBUTE = "cart";
+    private final String CART_ATTRIBUTE = "sessionCart";
     private final String ERROR_ATTRIBUTE = "error";
     private final String RECENT_PRODUCTS_ATTRIBUTE = "recentlyViewedProducts";
-    private final String ERROR_STOCK_MESSAGE = "outOfStockErrorMessage";
-    private final String ERROR_NUMBER_FORMAT_MESSAGE = "numberFormatErrorMessage";
-    private final String ERROR_NON_POSITIVE_MESSAGE = "nonPositiveErrorMessage";
+    private final String ERROR_STOCK_MESSAGE = "error.outOfStock.message";
+    private final String ERROR_NUMBER_FORMAT_MESSAGE = "error.numberFormat.message";
+    private final String ERROR_NON_POSITIVE_MESSAGE = "error.nonPositive.message";
     private final String QUANTITY_PARAMETER = "quantity";
     private final String MESSAGE_PARAMETER_SUCCESS_PRODUCT_ADD_TO_CART = "?message=Product added to cart";
     private final String PRODUCT_DETAILS_PAGE = "/WEB-INF/pages/productDetails.jsp";
     private final String PRODUCTS_PATH = "/products/";
-    private final String BASE_NAME_PATH = "resources";
+    private final String BASE_NAME_PATH = "error";
     private final int START_INDEX_WITHOUT_SLASH = 1;
     private ProductDao productDao;
     private CartService cartService;
@@ -47,7 +49,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         currentLocale = Locale.getDefault();
-        messages = ResourceBundle.getBundle(BASE_NAME_PATH, currentLocale);
+        messages = ResourceBundle.getBundle(BASE_NAME_PATH , currentLocale);
         productDao = ArrayListProductDao.getInstance();
         cartService = CartSessionServiceImpl.getInstance();
         recentlyViewedProductsService = RecentlyViewedProductsServiceImpl.getInstance();

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 public class CartSessionServiceImpl implements CartService {
-    private static final String SESSION_CART = CartSessionServiceImpl.class.getName() + ".cart";
+    private static final String SESSION_CART = CartSessionServiceImpl.class.getName() + ".sessionCart";
     private final Object lock = new Object();
 
     private ProductDao productDao;

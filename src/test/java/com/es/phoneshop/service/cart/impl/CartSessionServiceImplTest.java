@@ -9,7 +9,9 @@ import com.es.phoneshop.model.product.ProductBuilderImpl;
 import com.es.phoneshop.service.cart.CartService;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -17,6 +19,7 @@ import java.util.Currency;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+@RunWith(MockitoJUnitRunner.class)
 public class CartSessionServiceImplTest {
     private final Currency USD = Currency.getInstance("USD");
     private final String codeTest = "test-product";
@@ -32,7 +35,6 @@ public class CartSessionServiceImplTest {
     @Mock
     private ProductDao productDao;
 
-
     @Before
     public void setup() {
         productDao = ArrayListProductDao.getInstance();
@@ -42,6 +44,7 @@ public class CartSessionServiceImplTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenInvalidId() throws OutOfStockException {
         Cart cart = new Cart();
+
         cartService.add(cart, null, quantityNormalTest);
     }
 
@@ -60,14 +63,17 @@ public class CartSessionServiceImplTest {
                 .setStock(stockTest)
                 .setImageUrl(imageUrlTest)
                 .build();
-        productDao.save(productTest);
         Cart cart = new Cart();
+        productDao.save(productTest);
+
         cartService.add(cart, productIdTest, 0);
+
         assertFalse(cart.getCartItems().isEmpty());
     }
 
     @Test
     public void shouldBeTrueWhenAddTwoSameProducts() throws OutOfStockException {
+        int expectedSize = 1;
         Product productTest = new ProductBuilderImpl().setCode(codeTest)
                 .setId(productIdTest)
                 .setDescription(descriptionTest)
@@ -76,11 +82,12 @@ public class CartSessionServiceImplTest {
                 .setStock(stockTest)
                 .setImageUrl(imageUrlTest)
                 .build();
-        productDao.save(productTest);
         Cart cart = new Cart();
+        productDao.save(productTest);
+
         cartService.add(cart, productIdTest, quantityNormalTest);
         cartService.add(cart, productIdTest, quantityNormalTest);
-        int expectedSize = 1;
+
         assertEquals(expectedSize, cart.getCartItems().size());
     }
 }

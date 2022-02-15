@@ -4,10 +4,10 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
-<jsp:useBean id="cart" scope="request" type="com.es.phoneshop.model.cart.Cart"/>
+<jsp:useBean id="sessionCart" scope="request" type="com.es.phoneshop.model.cart.Cart"/>
 <tags:master pageTitle="Product Details">
     <p>
-        Cart: ${cart}
+        Cart: ${sessionCart}
     </p>
     <c:if test="${not empty error}">
         <div class="error">

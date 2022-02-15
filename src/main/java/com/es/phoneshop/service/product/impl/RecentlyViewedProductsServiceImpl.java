@@ -38,7 +38,7 @@ public class RecentlyViewedProductsServiceImpl implements RecentlyViewedProducts
                     = (ArrayList<Product>) request.getSession().getAttribute(SESSION_RECENTLY_VIEWED_PRODUCTS_ATTRIBUTE);
             if (recentlyViewedProducts == null) {
                 request.getSession().setAttribute(SESSION_RECENTLY_VIEWED_PRODUCTS_ATTRIBUTE,
-                        recentlyViewedProducts = new ArrayList<>(3));
+                        recentlyViewedProducts = new ArrayList<>(MAX_AMOUNT_RECENT_PRODUCTS));
             }
             return recentlyViewedProducts;
         }
@@ -47,6 +47,9 @@ public class RecentlyViewedProductsServiceImpl implements RecentlyViewedProducts
     @Override
     public void addToRecentlyViewed(ArrayList<Product> recentlyViewedProducts, Long productId) {
         Product product = productDao.getProduct(productId);
+        if (recentlyViewedProducts == null) {
+            throw new IllegalArgumentException();
+        }
         if (recentlyViewedProducts.stream()
                 .noneMatch(productItem -> productItem.equals(product))) {
             if (recentlyViewedProducts.size() == MAX_AMOUNT_RECENT_PRODUCTS) {

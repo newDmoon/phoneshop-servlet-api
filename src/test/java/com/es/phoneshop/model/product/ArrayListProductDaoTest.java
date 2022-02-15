@@ -44,7 +44,9 @@ public class ArrayListProductDaoTest {
                 .setStock(stockTest)
                 .setImageUrl(imageUrlTest)
                 .build();
+
         productDao.save(productTest);
+
         assertNotNull(productDao.getProduct(productTest.getId()));
     }
 
@@ -64,9 +66,11 @@ public class ArrayListProductDaoTest {
                 .setStock(stockTest)
                 .setImageUrl(imageUrlTest)
                 .build();
+
         productDao.save(productTest);
-        assertTrue(productTest.getId() > 0);
         Product result = productDao.getProduct(Long.valueOf(productTest.getId()));
+
+        assertTrue(productTest.getId() > 0);
         assertNotNull(result);
     }
 
@@ -79,6 +83,7 @@ public class ArrayListProductDaoTest {
                 .setStock(stockTest)
                 .setImageUrl(imageUrlTest)
                 .build();
+
         productDao.save(productTest);
         productDao.delete(productTest.getId());
         productDao.getProduct(productTest.getId());
