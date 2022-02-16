@@ -1,9 +1,9 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.ArrayListProductDao;
+import com.es.phoneshop.dao.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductBuilderImpl;
-import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.dao.ProductDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,13 +65,16 @@ public class ProductDetailsPageServletTest {
                 .build();
         productDao.save(testProduct);
         when(request.getPathInfo()).thenReturn(SLASH + idTest);
+
         servlet.doGet(request, response);
+
         verify(requestDispatcher).forward(request, response);
     }
 
     @Test(expected = NumberFormatException.class)
     public void shouldThrowExceptionWhenInvalidIdProduct() throws ServletException, IOException {
         when(request.getPathInfo()).thenReturn(INVALID_STRING_PATH);
+
         servlet.doGet(request, response);
     }
 }
