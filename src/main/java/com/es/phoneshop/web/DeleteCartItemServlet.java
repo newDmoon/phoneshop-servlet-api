@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+// TODO tests
 public class DeleteCartItemServlet extends HttpServlet {
     private final int START_INDEX_WITHOUT_SLASH = 1;
     private final String MESSAGE_PARAMETER_SUCCESS_PRODUCT_ADD_TO_CART = "/cart?message=Cart item removed successfully";
@@ -22,7 +23,6 @@ public class DeleteCartItemServlet extends HttpServlet {
         cartService = CartSessionServiceImpl.getInstance();
     }
 
-    // TODO const
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String productInfo = request.getPathInfo().substring(START_INDEX_WITHOUT_SLASH);

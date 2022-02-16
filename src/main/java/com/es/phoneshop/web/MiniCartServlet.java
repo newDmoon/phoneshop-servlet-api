@@ -10,12 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+// TODO tests
 public class MiniCartServlet extends HttpServlet {
     private final String CART_PAGE = "/WEB-INF/pages/minicart.jsp";
     private final String CART_ATTRIBUTE = "cart";
-    private final String ERRORS_ATTRIBUTE = "errors";
-    private final String QUANTITY_PARAMETER = "quantity";
-    private final String PRODUCT_ID_PARAMETER = "productId";
     private CartService cartService;
 
     @Override

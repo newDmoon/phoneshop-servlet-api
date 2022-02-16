@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 // TODO all localization
+// TODO tests
 public class CartPageServlet extends HttpServlet {
     private final String CART_PAGE = "/WEB-INF/pages/cart.jsp";
     private final String CART_ATTRIBUTE = "cart";
@@ -44,8 +45,6 @@ public class CartPageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String[] productIds = request.getParameterValues(PRODUCT_ID_PARAMETER);
         String[] quantities = request.getParameterValues(QUANTITY_PARAMETER);
-
-
         Map<Long, String> errors = new HashMap<>();
 
         for (int i = 0; i < productIds.length || i < quantities.length; i++) {

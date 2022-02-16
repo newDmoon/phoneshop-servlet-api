@@ -106,6 +106,7 @@ public class CartSessionServiceImpl implements CartService {
                 .map(CartItem::getQuantity).mapToInt(cartItemQuality -> cartItemQuality).sum());
     }
 
+    // TODO method calculate total cost
     private void recalculateCartTotalCost(Cart cart){
 //        cart.setTotalCost(cart.getCartItems().stream()
 //                .map(CartItem::getProduct)
