@@ -22,7 +22,7 @@
     <h1>
             ${product.description}
     </h1>
-    <form method="post">
+    <form method="post" action="${pageContext.servletContext.contextPath}/products/${product.id}">
         <table>
             <tr>
                 <td>Image</td>
@@ -74,13 +74,13 @@
                     <c:forEach var="recentlyViewedProduct" items="${recentlyViewedProducts}">
                         <td>
                             <div><img src="${recentlyViewedProduct.imageUrl}"/></div>
-                            <div><a href="${pageContext.servletContext.contextPath}/products/${product.id}">
-                                    ${product.description}
+                            <div><a href="${pageContext.servletContext.contextPath}/products/${recentlyViewedProduct.id}">
+                                    ${recentlyViewedProduct.description}
                             </a></div>
                             <div>
-                                <a href="${pageContext.servletContext.contextPath}/products/priceHistory/${product.id}">
-                                    <fmt:formatNumber value="${product.price}" type="currency"
-                                                      currencySymbol="${product.currency.symbol}"/>
+                                <a href="${pageContext.servletContext.contextPath}/products/priceHistory/${recentlyViewedProduct.id}">
+                                    <fmt:formatNumber value="${recentlyViewedProduct.price}" type="currency"
+                                                      currencySymbol="${recentlyViewedProduct.currency.symbol}"/>
                                 </a></div>
                         </td>
                     </c:forEach>

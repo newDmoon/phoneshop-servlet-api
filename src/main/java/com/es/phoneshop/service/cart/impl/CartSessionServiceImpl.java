@@ -10,6 +10,7 @@ import com.es.phoneshop.service.cart.CartService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class CartSessionServiceImpl implements CartService {
     private static final String SESSION_CART = "sessionCart";
@@ -48,16 +49,8 @@ public class CartSessionServiceImpl implements CartService {
     @Override
     public void add(Cart cart, Long productId, int quantity) throws OutOfStockException {
         synchronized (lock) {
-            if (cart == null) {
-                throw new IllegalArgumentException();
-            }
             Product product = productDao.getProduct(productId);
-            if (product.getStock() < quantity) {
-                throw new OutOfStockException(product, quantity, product.getStock());
-            }
-            Optional<CartItem> cartItemOptional = cart.getCartItems().stream()
-                    .filter(cartItem -> cartItem.getProduct().equals(product))
-                    .findAny();
+            Optional<CartItem> cartItemOptional = find(cart, productId, quantity);
             if (cartItemOptional.isPresent()) {
                 CartItem cartItemToRewrite = new CartItem(cartItemOptional.get().getProduct(),
                         cartItemOptional.get().getQuantity() + quantity);
@@ -66,6 +59,57 @@ public class CartSessionServiceImpl implements CartService {
             } else {
                 cart.getCartItems().add(new CartItem(product, quantity));
             }
+            recalculateCartTotalQuantity(cart);
+            recalculateCartTotalCost(cart);
         }
+    }
+
+    @Override
+    public void update(Cart cart, Long productId, int quantity) throws OutOfStockException {
+        synchronized (lock) {
+            Product product = productDao.getProduct(productId);
+            Optional<CartItem> cartItemOptional = find(cart, productId, quantity);
+            if (cartItemOptional.isPresent()) {
+                cartItemOptional.get().setQuantity(quantity);
+            } else {
+                cart.getCartItems().add(new CartItem(product, quantity));
+            }
+            recalculateCartTotalQuantity(cart);
+            recalculateCartTotalCost(cart);
+        }
+    }
+
+    @Override
+    public void delete(Cart cart, Long productId) {
+        cart.getCartItems().removeIf(cartItem ->
+                productId.equals(cartItem.getProduct().getId()));
+        recalculateCartTotalQuantity(cart);
+        recalculateCartTotalCost(cart);
+    }
+
+    private Optional<CartItem> find(Cart cart, Long productId, int quantity) throws OutOfStockException {
+        if (cart == null) {
+            throw new IllegalArgumentException();
+        }
+        Product product = productDao.getProduct(productId);
+        if (product.getStock() < quantity) {
+            throw new OutOfStockException(product, quantity, product.getStock());
+        }
+        Optional<CartItem> cartItemOptional = cart.getCartItems().stream()
+                .filter(cartItem -> cartItem.getProduct().equals(product))
+                .findAny();
+        return cartItemOptional;
+    }
+
+    private void recalculateCartTotalQuantity(Cart cart){
+        cart.setTotalQuantity(cart.getCartItems().stream()
+                .map(CartItem::getQuantity).mapToInt(cartItemQuality -> cartItemQuality).sum());
+    }
+
+    private void recalculateCartTotalCost(Cart cart){
+//        cart.setTotalCost(cart.getCartItems().stream()
+//                .map(CartItem::getProduct)
+//                .map(Product::getPrice)
+//                .map());
     }
 }
