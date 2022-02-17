@@ -130,10 +130,5 @@ public class Product implements Serializable {
         return String.join(StringUtils.SPACE,
                 id.toString(),
                 code,
-                description,
-                price.toString(),
-                currency.toString(),
-                String.valueOf(stock),
-                imageUrl);
-    }
+                description);}
 }

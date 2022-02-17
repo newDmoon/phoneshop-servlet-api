@@ -9,8 +9,8 @@ import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.service.cart.CartService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class CartSessionServiceImpl implements CartService {
     private static final String SESSION_CART = "sessionCart";
@@ -52,10 +52,7 @@ public class CartSessionServiceImpl implements CartService {
             Product product = productDao.getProduct(productId);
             Optional<CartItem> cartItemOptional = find(cart, productId, quantity);
             if (cartItemOptional.isPresent()) {
-                CartItem cartItemToRewrite = new CartItem(cartItemOptional.get().getProduct(),
-                        cartItemOptional.get().getQuantity() + quantity);
-                cart.getCartItems().remove(cartItemOptional.get());
-                cart.getCartItems().add(cartItemToRewrite);
+                cartItemOptional.get().setQuantity(quantity + cartItemOptional.get().getQuantity());
             } else {
                 cart.getCartItems().add(new CartItem(product, quantity));
             }
@@ -67,11 +64,14 @@ public class CartSessionServiceImpl implements CartService {
     @Override
     public void update(Cart cart, Long productId, int quantity) throws OutOfStockException {
         synchronized (lock) {
-            Product product = productDao.getProduct(productId);
+            if(quantity <= 0){
+                throw new IllegalArgumentException();
+            }
             Optional<CartItem> cartItemOptional = find(cart, productId, quantity);
             if (cartItemOptional.isPresent()) {
                 cartItemOptional.get().setQuantity(quantity);
             } else {
+                Product product = productDao.getProduct(productId);
                 cart.getCartItems().add(new CartItem(product, quantity));
             }
             recalculateCartTotalQuantity(cart);
@@ -96,21 +96,26 @@ public class CartSessionServiceImpl implements CartService {
             throw new OutOfStockException(product, quantity, product.getStock());
         }
         Optional<CartItem> cartItemOptional = cart.getCartItems().stream()
-                .filter(cartItem -> cartItem.getProduct().equals(product))
+                .filter(cartItem -> cartItem.getProduct().getId().equals(productId))
                 .findAny();
         return cartItemOptional;
     }
 
-    private void recalculateCartTotalQuantity(Cart cart){
+    private void recalculateCartTotalQuantity(Cart cart) {
         cart.setTotalQuantity(cart.getCartItems().stream()
-                .map(CartItem::getQuantity).mapToInt(cartItemQuality -> cartItemQuality).sum());
+                .map(CartItem::getQuantity)
+                .mapToInt(cartItemQuality -> cartItemQuality)
+                .sum());
     }
 
     // TODO method calculate total cost
-    private void recalculateCartTotalCost(Cart cart){
-//        cart.setTotalCost(cart.getCartItems().stream()
-//                .map(CartItem::getProduct)
-//                .map(Product::getPrice)
-//                .map());
+    private void recalculateCartTotalCost(Cart cart) {
+        cart.getCartItems().stream()
+                .peek(cartItem -> {
+                    int itemsCost = cart.getTotalCost().intValue()
+                            + cartItem.getQuantity() * cartItem.getProduct().getPrice().intValue();
+                    cart.setTotalCost(BigDecimal.valueOf(itemsCost));
+                    cart.setTotalQuantity(cart.getTotalQuantity() + cartItem.getQuantity());
+                });
     }
 }

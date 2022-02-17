@@ -13,6 +13,11 @@
                 ${param.message}
         </div>
     </c:if>
+    <c:if test="${not empty errors}">
+        <p class="error" id="product-description-text">
+            There were errors updating cart
+        </p>
+    </c:if>
     <form method="post" action="${pageContext.servletContext.contextPath}/cart">
         <table>
             <thead>
@@ -35,17 +40,17 @@
                     <td>
                         <img class="product-tile" src="${cartItem.product.imageUrl}">
                     </td>
-                    <td class="quantity">
+                    <td>
                         <a href="${pageContext.servletContext.contextPath}/products/${cartItem.product.id}">
                                 ${cartItem.product.description}
                         </a>
                     </td>
-                    <td>
+                    <td class="quantity">
                         <fmt:formatNumber value="${cartItem.quantity}" var="quantity"/>
-                        <c:set var="error" value="${not empty errors[cartItem.product.id]}"/>
-                        <input name="quantity"
-                               value="${not empty error ? paramValues['quantity'][status.index] : quantity}"
-                               class="quantity">
+                        <c:set var="error" value="${errors[cartItem.product.id]}"/>
+                        <input class="quantity"
+                                name="quantity"
+                               value="${not empty error ? paramValues['quantity'][status.index] : cartItem.quantity}">
                         <c:if test="${not empty error}">
                             <div class="error">
                                     ${errors.cartItem.product.id}
@@ -79,6 +84,5 @@
             <button>Update</button>
         </p>
     </form>
-    <form id="deleteCartItem" method="post">
-    </form>
+    <form id="deleteCartItem" method="post"></form>
 </tags:master>
