@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.Currency;
 import java.util.NoSuchElementException;
 
-import static org.mockito.Mockito.when;
-
 @RunWith(MockitoJUnitRunner.class)
 public class RecentlyViewedProductsServiceImplTest {
     private final Currency USD = Currency.getInstance("USD");
@@ -34,6 +32,7 @@ public class RecentlyViewedProductsServiceImplTest {
     private final int stockTest = 100;
     private final String imageUrlTest = "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg";
     private final Long productIdTest = 2L;
+    private final Long invalidProductIeTest = 15L;
 
     @Mock
     private HttpServletRequest request;
@@ -53,7 +52,6 @@ public class RecentlyViewedProductsServiceImplTest {
     @Before
     public void setup() {
         productDao = ArrayListProductDao.getInstance();
-        when(request.getSession()).thenReturn(session);
         recentlyViewedProductsService = RecentlyViewedProductsServiceImpl.getInstance();
     }
 
@@ -76,7 +74,8 @@ public class RecentlyViewedProductsServiceImplTest {
     public void shouldThrowExceptionWhenInvalidProductId() {
         ArrayList<Product> recentlyViewedProducts = new ArrayList<>();
 
-        recentlyViewedProductsService.addToRecentlyViewed(recentlyViewedProducts, productIdTest);
+        recentlyViewedProductsService.addToRecentlyViewed(recentlyViewedProducts, invalidProductIeTest);
+
     }
 
     @Test(expected = IllegalArgumentException.class)

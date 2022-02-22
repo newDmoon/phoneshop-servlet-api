@@ -19,19 +19,18 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-// TODO all localization
-// TODO tests
 public class CartPageServlet extends HttpServlet {
     private final String CART_PAGE = "/WEB-INF/pages/cart.jsp";
     private final String CART_ATTRIBUTE = "cart";
     private final String ERROR_STOCK_MESSAGE = "error.outOfStock.message";
     private final String ERROR_NUMBER_FORMAT_MESSAGE = "error.numberFormat.message";
     private final String ERROR_NON_POSITIVE_MESSAGE = "error.nonPositive.message";
-    private final String MESSAGE_PARAMETER_SUCCESS_PRODUCT_ADD_TO_CART = "/cart?message=Product updated successfully";
+    private final String MESSAGE_PARAMETER_SUCCESS_PRODUCT_ADD_TO_CART = "/cart?message=Cart updated successfully";
     private final String ERRORS_ATTRIBUTE = "errors";
     private final String QUANTITY_PARAMETER = "quantity";
     private final String PRODUCT_ID_PARAMETER = "productId";
     private final String BASE_NAME_PATH = "error";
+    private final String REDIRECT_FORMAT = "%s%s";
     private CartService cartService;
     private Locale currentLocale;
     private ResourceBundle messages;
@@ -51,12 +50,12 @@ public class CartPageServlet extends HttpServlet {
         request.getRequestDispatcher(CART_PAGE).forward(request, response);
     }
 
+    // TODO map
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String[] productIds = request.getParameterValues(PRODUCT_ID_PARAMETER);
         String[] quantities = request.getParameterValues(QUANTITY_PARAMETER);
         Map<Long, String> errors = new HashMap<>();
-
         for (int i = 0; i < productIds.length; i++) {
             Long productId = Long.valueOf(productIds[i]);
             int quantity = 0;
@@ -71,8 +70,9 @@ public class CartPageServlet extends HttpServlet {
                 handleError(errors, productId, e);
             }
         }
-        if(errors.isEmpty()){
-            response.sendRedirect(String.format("%s%s", request.getContextPath(),
+
+        if (errors.isEmpty()) {
+            response.sendRedirect(String.format(REDIRECT_FORMAT, request.getContextPath(),
                     MESSAGE_PARAMETER_SUCCESS_PRODUCT_ADD_TO_CART));
         } else {
             request.setAttribute(ERRORS_ATTRIBUTE, errors);
@@ -80,15 +80,15 @@ public class CartPageServlet extends HttpServlet {
         }
     }
 
-    //TODO add localization
     private void handleError(Map<Long, String> errors, Long productId, Exception e) {
-        if (e.getClass() == ParseException.class) {
-            errors.put(productId, messages.getString(ERROR_NON_POSITIVE_MESSAGE));
-        } else if (e.getClass() == IllegalArgumentException.class) {
+        if (e instanceof ParseException) {
             errors.put(productId, messages.getString(ERROR_NUMBER_FORMAT_MESSAGE));
-        } else if (e.getClass() == OutOfStockException.class) {
+        } else if (e instanceof IllegalArgumentException) {
+            errors.put(productId, messages.getString(ERROR_NON_POSITIVE_MESSAGE));
+        } else if (e instanceof OutOfStockException) {
+            Integer availableStock = ((OutOfStockException) e).getStockAvailable();
             errors.put(productId, String.join(StringUtils.SPACE,
-                    messages.getString(ERROR_STOCK_MESSAGE), "sdfd"));
+                    messages.getString(ERROR_STOCK_MESSAGE), availableStock.toString()));
         }
     }
 

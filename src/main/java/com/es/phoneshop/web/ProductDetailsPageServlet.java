@@ -37,6 +37,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private final String PRODUCT_DETAILS_PAGE = "/WEB-INF/pages/productDetails.jsp";
     private final String PRODUCTS_PATH = "/products/";
     private final String BASE_NAME_PATH = "error";
+    private final String REDIRECT_FORMAT = "%s%s%s%s";
     private final int START_INDEX_WITHOUT_SLASH = 1;
     private ProductDao productDao;
     private CartService cartService;
@@ -69,6 +70,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long productId = 0L;
         int quantity = 0;
+
         try {
             productId = parseProductId(request);
             quantity = parseQuantity(request);
@@ -81,6 +83,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
             doGet(request, response);
             return;
         }
+
         Cart cart = cartService.getCart(request);
         try {
             cartService.add(cart, productId, quantity);
@@ -91,7 +94,8 @@ public class ProductDetailsPageServlet extends HttpServlet {
             doGet(request, response);
             return;
         }
-        response.sendRedirect(String.format("%s%s%s%s", request.getContextPath(),
+
+        response.sendRedirect(String.format(REDIRECT_FORMAT, request.getContextPath(),
                 PRODUCTS_PATH,
                 productId,
                 MESSAGE_PARAMETER_SUCCESS_PRODUCT_ADD_TO_CART));
@@ -102,7 +106,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         return Long.valueOf(productInfo);
     }
 
-    private int parseQuantity(HttpServletRequest request) throws NumberFormatException, ParseException, IllegalArgumentException {
+    private int parseQuantity(HttpServletRequest request) throws ParseException, IllegalArgumentException {
         NumberFormat numberFormat = NumberFormat.getInstance(request.getLocale());
         String parameterQuantity = request.getParameter(QUANTITY_PARAMETER);
         int quantity = numberFormat.parse(parameterQuantity).intValue();

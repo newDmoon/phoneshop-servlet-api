@@ -1,18 +1,15 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.dao.ProductDao;
-import com.es.phoneshop.service.cart.CartService;
-import com.es.phoneshop.service.product.RecentlyViewedProductsService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -26,7 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductListPageServletTest {
+public class MiniCartServletTest extends HttpServlet {
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -34,32 +31,39 @@ public class ProductListPageServletTest {
     @Mock
     private RequestDispatcher requestDispatcher;
     @Mock
-    private ServletConfig config;
-    @Mock
     private HttpSession session;
     @Mock
-    private CartService cartService;
-    @Mock
-    private RecentlyViewedProductsService recentlyViewedProductsService;
-    @Mock
-    private ProductDao productDao;
+    private ServletConfig config;
 
-    private final String PRODUCTS_ATTRIBUTE = "products";
-
-    @InjectMocks
-    private ProductListPageServlet servlet = new ProductListPageServlet();
+    private final String CART_PAGE = "/WEB-INF/pages/minicart.jsp";
+    private final String CART_ATTRIBUTE = "cart";
+    MiniCartServlet servlet = new MiniCartServlet();
 
     @Before
-    public void setup() throws ServletException {
+    public void setUp() throws Exception {
+        servlet.init(config);
+        when(request.getSession()).thenReturn(session);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
     }
 
     @Test
-    public void testDoGet() throws ServletException, IOException {
+    public void shouldInvokeRequestDispatcherWhenCorrectInitialPage() throws ServletException, IOException {
         servlet.doGet(request, response);
 
-        verify(requestDispatcher).forward(request, response);
-        verify(request).setAttribute(eq(PRODUCTS_ATTRIBUTE), any());
-        verify(recentlyViewedProductsService, times(1)).getRecentlyViewedProducts(any());
+        verify(request).getRequestDispatcher(eq(CART_PAGE));
+    }
+
+    @Test
+    public void shouldSetAttributeWhenDoGet() throws ServletException, IOException {
+        servlet.doGet(request, response);
+
+        verify(request).setAttribute(eq(CART_ATTRIBUTE), any());
+    }
+
+    @Test
+    public void shouldInvokeIncludeWhenDoGet() throws ServletException, IOException {
+        servlet.doGet(request, response);
+
+        verify(requestDispatcher, times(1)).include(request, response);
     }
 }

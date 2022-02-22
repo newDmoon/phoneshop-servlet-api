@@ -50,6 +50,9 @@ public class CartSessionServiceImpl implements CartService {
     public void add(Cart cart, Long productId, int quantity) throws OutOfStockException {
         synchronized (lock) {
             Product product = productDao.getProduct(productId);
+            if (quantity <= 0) {
+                throw new IllegalArgumentException();
+            }
             Optional<CartItem> cartItemOptional = find(cart, productId, quantity);
             if (cartItemOptional.isPresent()) {
                 cartItemOptional.get().setQuantity(quantity + cartItemOptional.get().getQuantity());
@@ -64,16 +67,11 @@ public class CartSessionServiceImpl implements CartService {
     @Override
     public void update(Cart cart, Long productId, int quantity) throws OutOfStockException {
         synchronized (lock) {
-            if(quantity <= 0){
+            if (quantity <= 0) {
                 throw new IllegalArgumentException();
             }
             Optional<CartItem> cartItemOptional = find(cart, productId, quantity);
-            if (cartItemOptional.isPresent()) {
-                cartItemOptional.get().setQuantity(quantity);
-            } else {
-                Product product = productDao.getProduct(productId);
-                cart.getCartItems().add(new CartItem(product, quantity));
-            }
+            cartItemOptional.ifPresent(cartItem -> cartItem.setQuantity(quantity));
             recalculateCartTotalQuantity(cart);
             recalculateCartTotalCost(cart);
         }
@@ -89,6 +87,9 @@ public class CartSessionServiceImpl implements CartService {
 
     private Optional<CartItem> find(Cart cart, Long productId, int quantity) throws OutOfStockException {
         if (cart == null) {
+            throw new IllegalArgumentException();
+        }
+        if (quantity < 0) {
             throw new IllegalArgumentException();
         }
         Product product = productDao.getProduct(productId);
@@ -108,14 +109,17 @@ public class CartSessionServiceImpl implements CartService {
                 .sum());
     }
 
-    // TODO method calculate total cost
+
     private void recalculateCartTotalCost(Cart cart) {
-        cart.getCartItems().stream()
-                .peek(cartItem -> {
-                    int itemsCost = cart.getTotalCost().intValue()
-                            + cartItem.getQuantity() * cartItem.getProduct().getPrice().intValue();
-                    cart.setTotalCost(BigDecimal.valueOf(itemsCost));
-                    cart.setTotalQuantity(cart.getTotalQuantity() + cartItem.getQuantity());
-                });
+        Optional<BigDecimal> totalCost;
+
+        totalCost = cart.getCartItems().stream()
+                .map(cartItem -> cartItem.getProduct().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())))
+                .reduce(BigDecimal::add);
+        if (!totalCost.isPresent()) {
+            cart.setTotalCost(BigDecimal.ZERO);
+        } else {
+            cart.setTotalCost(totalCost.get());
+        }
     }
 }

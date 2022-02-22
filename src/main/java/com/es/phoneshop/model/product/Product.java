@@ -130,5 +130,6 @@ public class Product implements Serializable {
         return String.join(StringUtils.SPACE,
                 id.toString(),
                 code,
-                description);}
+                description);
+    }
 }

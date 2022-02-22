@@ -12,9 +12,9 @@ public class Cart implements Serializable {
     private int totalQuantity;
     private BigDecimal totalCost;
 
-    public Cart()
-    {
+    public Cart() {
         totalQuantity = 0;
+        totalCost = new BigDecimal(0);
         this.cartItems = new ArrayList<>();
     }
 

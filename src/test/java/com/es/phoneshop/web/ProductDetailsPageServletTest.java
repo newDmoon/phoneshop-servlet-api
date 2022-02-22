@@ -1,9 +1,10 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.dao.ArrayListProductDao;
+import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductBuilderImpl;
-import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.service.product.RecentlyViewedProductsService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +43,8 @@ public class ProductDetailsPageServletTest {
     private RequestDispatcher requestDispatcher;
     @Mock
     private ServletConfig config;
+    @Mock
+    private RecentlyViewedProductsService recentlyViewedProductsService;
 
     private ProductDao productDao;
     private ProductDetailsPageServlet servlet = new ProductDetailsPageServlet();
