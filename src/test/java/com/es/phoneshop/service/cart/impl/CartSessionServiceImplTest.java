@@ -29,6 +29,7 @@ public class CartSessionServiceImplTest {
     private final String imageUrlTest = "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg";
     private final Long productIdTest = 2L;
     private final int quantityNormalTest = 3;
+    private final int quantityIncorrectTest = 0;
 
     @Mock
     private CartService cartService;
@@ -53,6 +54,22 @@ public class CartSessionServiceImplTest {
         cartService.add(null, productIdTest, quantityNormalTest);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowExceptionWhenQuantityLessThanOne() throws OutOfStockException {
+        Product productTest = new ProductBuilderImpl().setCode(codeTest)
+                .setId(productIdTest)
+                .setDescription(descriptionTest)
+                .setPrice(priceTest)
+                .setCurrency(USD)
+                .setStock(stockTest)
+                .setImageUrl(imageUrlTest)
+                .build();
+        Cart cart = new Cart();
+        productDao.save(productTest);
+
+        cartService.add(cart, productIdTest, quantityIncorrectTest);
+    }
+
     @Test
     public void shouldAddToCartWhenInputCorrectData() throws OutOfStockException {
         Product productTest = new ProductBuilderImpl().setCode(codeTest)
@@ -66,7 +83,7 @@ public class CartSessionServiceImplTest {
         Cart cart = new Cart();
         productDao.save(productTest);
 
-        cartService.add(cart, productIdTest, 0);
+        cartService.add(cart, productIdTest, quantityNormalTest);
 
         assertFalse(cart.getCartItems().isEmpty());
     }

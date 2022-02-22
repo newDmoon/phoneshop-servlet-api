@@ -9,6 +9,7 @@ import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.service.cart.CartService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 public class CartSessionServiceImpl implements CartService {
@@ -48,24 +49,77 @@ public class CartSessionServiceImpl implements CartService {
     @Override
     public void add(Cart cart, Long productId, int quantity) throws OutOfStockException {
         synchronized (lock) {
-            if (cart == null) {
+            Product product = productDao.getProduct(productId);
+            if (quantity <= 0) {
                 throw new IllegalArgumentException();
             }
-            Product product = productDao.getProduct(productId);
-            if (product.getStock() < quantity) {
-                throw new OutOfStockException(product, quantity, product.getStock());
-            }
-            Optional<CartItem> cartItemOptional = cart.getCartItems().stream()
-                    .filter(cartItem -> cartItem.getProduct().equals(product))
-                    .findAny();
+            Optional<CartItem> cartItemOptional = find(cart, productId, quantity);
             if (cartItemOptional.isPresent()) {
-                CartItem cartItemToRewrite = new CartItem(cartItemOptional.get().getProduct(),
-                        cartItemOptional.get().getQuantity() + quantity);
-                cart.getCartItems().remove(cartItemOptional.get());
-                cart.getCartItems().add(cartItemToRewrite);
+                cartItemOptional.get().setQuantity(quantity + cartItemOptional.get().getQuantity());
             } else {
                 cart.getCartItems().add(new CartItem(product, quantity));
             }
+            recalculateCartTotalQuantity(cart);
+            recalculateCartTotalCost(cart);
+        }
+    }
+
+    @Override
+    public void update(Cart cart, Long productId, int quantity) throws OutOfStockException {
+        synchronized (lock) {
+            if (quantity <= 0) {
+                throw new IllegalArgumentException();
+            }
+            Optional<CartItem> cartItemOptional = find(cart, productId, quantity);
+            cartItemOptional.ifPresent(cartItem -> cartItem.setQuantity(quantity));
+            recalculateCartTotalQuantity(cart);
+            recalculateCartTotalCost(cart);
+        }
+    }
+
+    @Override
+    public void delete(Cart cart, Long productId) {
+        cart.getCartItems().removeIf(cartItem ->
+                productId.equals(cartItem.getProduct().getId()));
+        recalculateCartTotalQuantity(cart);
+        recalculateCartTotalCost(cart);
+    }
+
+    private Optional<CartItem> find(Cart cart, Long productId, int quantity) throws OutOfStockException {
+        if (cart == null) {
+            throw new IllegalArgumentException();
+        }
+        if (quantity < 0) {
+            throw new IllegalArgumentException();
+        }
+        Product product = productDao.getProduct(productId);
+        if (product.getStock() < quantity) {
+            throw new OutOfStockException(product, quantity, product.getStock());
+        }
+        Optional<CartItem> cartItemOptional = cart.getCartItems().stream()
+                .filter(cartItem -> cartItem.getProduct().getId().equals(productId))
+                .findAny();
+        return cartItemOptional;
+    }
+
+    private void recalculateCartTotalQuantity(Cart cart) {
+        cart.setTotalQuantity(cart.getCartItems().stream()
+                .map(CartItem::getQuantity)
+                .mapToInt(cartItemQuality -> cartItemQuality)
+                .sum());
+    }
+
+
+    private void recalculateCartTotalCost(Cart cart) {
+        Optional<BigDecimal> totalCost;
+
+        totalCost = cart.getCartItems().stream()
+                .map(cartItem -> cartItem.getProduct().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())))
+                .reduce(BigDecimal::add);
+        if (!totalCost.isPresent()) {
+            cart.setTotalCost(BigDecimal.ZERO);
+        } else {
+            cart.setTotalCost(totalCost.get());
         }
     }
 }
