@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.IntStream;
 
 public class CartPageServlet extends HttpServlet {
     private final String CART_PAGE = "/WEB-INF/pages/cart.jsp";
@@ -25,7 +26,7 @@ public class CartPageServlet extends HttpServlet {
     private final String ERROR_STOCK_MESSAGE = "error.outOfStock.message";
     private final String ERROR_NUMBER_FORMAT_MESSAGE = "error.numberFormat.message";
     private final String ERROR_NON_POSITIVE_MESSAGE = "error.nonPositive.message";
-    private final String MESSAGE_PARAMETER_SUCCESS_PRODUCT_ADD_TO_CART = "/cart?message=Cart updated successfully";
+    private final String CART_PATH = "/cart";
     private final String ERRORS_ATTRIBUTE = "errors";
     private final String QUANTITY_PARAMETER = "quantity";
     private final String PRODUCT_ID_PARAMETER = "productId";
@@ -53,14 +54,14 @@ public class CartPageServlet extends HttpServlet {
     // TODO map
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String[] productIds = request.getParameterValues(PRODUCT_ID_PARAMETER);
-        String[] quantities = request.getParameterValues(QUANTITY_PARAMETER);
+        Map<String, String> parametersMap = getParametersAsMap(request);
         Map<Long, String> errors = new HashMap<>();
-        for (int i = 0; i < productIds.length; i++) {
-            Long productId = Long.valueOf(productIds[i]);
+
+        parametersMap.forEach((productIdString, quantityString) -> {
+            Long productId = Long.valueOf(productIdString);
             int quantity = 0;
             try {
-                quantity = parseQuantity(request, quantities[i]);
+                quantity = parseQuantity(request, quantityString);
             } catch (ParseException | IllegalArgumentException e) {
                 handleError(errors, productId, e);
             }
@@ -69,24 +70,24 @@ public class CartPageServlet extends HttpServlet {
             } catch (IllegalArgumentException | OutOfStockException e) {
                 handleError(errors, productId, e);
             }
-        }
+        });
 
         if (errors.isEmpty()) {
             response.sendRedirect(String.format(REDIRECT_FORMAT, request.getContextPath(),
-                    MESSAGE_PARAMETER_SUCCESS_PRODUCT_ADD_TO_CART));
+                    CART_PATH));
         } else {
             request.setAttribute(ERRORS_ATTRIBUTE, errors);
             doGet(request, response);
         }
     }
 
-    private void handleError(Map<Long, String> errors, Long productId, Exception e) {
-        if (e instanceof ParseException) {
+    private void handleError(Map<Long, String> errors, Long productId, Exception exception) {
+        if (exception instanceof ParseException) {
             errors.put(productId, messages.getString(ERROR_NUMBER_FORMAT_MESSAGE));
-        } else if (e instanceof IllegalArgumentException) {
+        } else if (exception instanceof IllegalArgumentException) {
             errors.put(productId, messages.getString(ERROR_NON_POSITIVE_MESSAGE));
-        } else if (e instanceof OutOfStockException) {
-            Integer availableStock = ((OutOfStockException) e).getStockAvailable();
+        } else if (exception instanceof OutOfStockException) {
+            Integer availableStock = ((OutOfStockException) exception).getStockAvailable();
             errors.put(productId, String.join(StringUtils.SPACE,
                     messages.getString(ERROR_STOCK_MESSAGE), availableStock.toString()));
         }
@@ -94,6 +95,18 @@ public class CartPageServlet extends HttpServlet {
 
     private int parseQuantity(HttpServletRequest request, String quantityParameter) throws ParseException {
         NumberFormat numberFormat = NumberFormat.getInstance(request.getLocale());
+
         return numberFormat.parse(quantityParameter).intValue();
+    }
+
+    private Map<String, String> getParametersAsMap(HttpServletRequest request){
+        String[] productIds = request.getParameterValues(PRODUCT_ID_PARAMETER);
+        String[] quantities = request.getParameterValues(QUANTITY_PARAMETER);
+        Map<String, String> parametersMap = new HashMap<>();
+
+        IntStream.range(0, productIds.length)
+                .forEach(index -> parametersMap.put(productIds[index] ,quantities[index]));
+
+        return parametersMap;
     }
 }

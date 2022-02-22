@@ -9,9 +9,11 @@
         <p>
             Cart: ${cart}
         </p>
-        <c:if test="${not empty param.message}">
+        <c:if test="${empty errors}">
             <div class="success">
-                    ${param.message}
+                <p>
+                    Successfully updated
+                </p>
             </div>
         </c:if>
         <c:if test="${not empty errors}">
