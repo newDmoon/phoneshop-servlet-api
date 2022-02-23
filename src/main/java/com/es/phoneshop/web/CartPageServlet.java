@@ -48,10 +48,10 @@ public class CartPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Cart cart = cartService.getCart(request);
         request.setAttribute(CART_ATTRIBUTE, cart);
+
         request.getRequestDispatcher(CART_PAGE).forward(request, response);
     }
 
-    // TODO map
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map<String, String> parametersMap = getParametersAsMap(request);
@@ -99,13 +99,13 @@ public class CartPageServlet extends HttpServlet {
         return numberFormat.parse(quantityParameter).intValue();
     }
 
-    private Map<String, String> getParametersAsMap(HttpServletRequest request){
+    private Map<String, String> getParametersAsMap(HttpServletRequest request) {
         String[] productIds = request.getParameterValues(PRODUCT_ID_PARAMETER);
         String[] quantities = request.getParameterValues(QUANTITY_PARAMETER);
         Map<String, String> parametersMap = new HashMap<>();
 
         IntStream.range(0, productIds.length)
-                .forEach(index -> parametersMap.put(productIds[index] ,quantities[index]));
+                .forEach(index -> parametersMap.put(productIds[index], quantities[index]));
 
         return parametersMap;
     }

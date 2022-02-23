@@ -59,6 +59,10 @@ button:hover{
   color: forestgreen;
 }
 
+.required{
+  color: red;
+}
+
 /* Page specific styles */
 body.product-list {
 

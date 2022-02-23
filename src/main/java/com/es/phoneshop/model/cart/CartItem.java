@@ -31,6 +31,11 @@ public class CartItem implements Serializable {
     }
 
     @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    @Override
     public String toString() {
         return String.join(StringUtils.SPACE, product.toString(), String.valueOf(quantity));
     }

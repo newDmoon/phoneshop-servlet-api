@@ -7,5 +7,6 @@ import java.util.ArrayList;
 
 public interface RecentlyViewedProductsService {
     ArrayList<Product> getRecentlyViewedProducts(HttpServletRequest request);
+
     void addToRecentlyViewed(ArrayList<Product> recentlyViewedProducts, Long productId);
 }
