@@ -14,11 +14,11 @@ import java.util.Optional;
 
 public class CartSessionServiceImpl implements CartService {
     private static final String SESSION_CART = "sessionCart";
+    private static volatile CartService instance;
+
     private final Object lock = new Object();
 
     private ProductDao productDao;
-
-    private static volatile CartService instance;
 
     public CartSessionServiceImpl() {
         productDao = ArrayListProductDao.getInstance();
@@ -49,7 +49,7 @@ public class CartSessionServiceImpl implements CartService {
     @Override
     public void add(Cart cart, Long productId, int quantity) throws OutOfStockException {
         synchronized (lock) {
-            Product product = productDao.getProduct(productId);
+            Product product = productDao.getById(productId);
             if (quantity <= 0) {
                 throw new IllegalArgumentException();
             }
@@ -70,8 +70,10 @@ public class CartSessionServiceImpl implements CartService {
             if (quantity <= 0) {
                 throw new IllegalArgumentException();
             }
+
             Optional<CartItem> cartItemOptional = find(cart, productId, quantity);
             cartItemOptional.ifPresent(cartItem -> cartItem.setQuantity(quantity));
+
             recalculateCartTotalQuantity(cart);
             recalculateCartTotalCost(cart);
         }
@@ -85,6 +87,13 @@ public class CartSessionServiceImpl implements CartService {
         recalculateCartTotalCost(cart);
     }
 
+    @Override
+    public void clearCart(HttpServletRequest request) {
+        getCart(request).getCartItems().clear();
+        recalculateCartTotalCost(getCart(request));
+        recalculateCartTotalQuantity(getCart(request));
+    }
+
     private Optional<CartItem> find(Cart cart, Long productId, int quantity) throws OutOfStockException {
         if (cart == null) {
             throw new IllegalArgumentException();
@@ -92,7 +101,8 @@ public class CartSessionServiceImpl implements CartService {
         if (quantity < 0) {
             throw new IllegalArgumentException();
         }
-        Product product = productDao.getProduct(productId);
+
+        Product product = productDao.getById(productId);
         if (product.getStock() < quantity) {
             throw new OutOfStockException(product, quantity, product.getStock());
         }

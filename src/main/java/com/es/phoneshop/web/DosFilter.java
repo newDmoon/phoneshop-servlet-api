@@ -13,7 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class DosFilter implements Filter {
-    private final int HTTP_STATUS_TOO_MANY_REQUESTS = 429;
+    private final int SC_TOO_MANY_REQUESTS = 429;
+
     private DosProtectionService dosProtectionService;
 
     @Override
@@ -26,7 +27,7 @@ public class DosFilter implements Filter {
         if (dosProtectionService.isAllowed(servletRequest.getRemoteAddr())) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
-            ((HttpServletResponse) servletResponse).setStatus(HTTP_STATUS_TOO_MANY_REQUESTS);
+            ((HttpServletResponse) servletResponse).setStatus(SC_TOO_MANY_REQUESTS);
         }
     }
 

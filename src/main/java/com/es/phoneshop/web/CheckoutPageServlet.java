@@ -1,5 +1,6 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.exception.UnexpectedDateException;
 import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.order.Order;
 import com.es.phoneshop.model.order.PaymentMethod;
@@ -7,7 +8,6 @@ import com.es.phoneshop.service.cart.CartService;
 import com.es.phoneshop.service.cart.impl.CartSessionServiceImpl;
 import com.es.phoneshop.service.order.OrderService;
 import com.es.phoneshop.service.order.impl.OrderServiceImpl;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -36,6 +37,9 @@ public class CheckoutPageServlet extends HttpServlet {
     private final String BASE_NAME_PATH = "error";
     private final String REDIRECT_FORMAT = "%s%s%s";
     private final String ERROR_VALUE_REQUIRED = "error.valueRequired.message";
+    private final String ERROR_DATE_FORMAT = "error.dateFormat.message";
+    private final int AMOUNT_ACTIVE_PERIOD_OF_MONTHS = 1;
+
     private CartService cartService;
     private OrderService orderService;
     private Locale currentLocale;
@@ -60,7 +64,6 @@ public class CheckoutPageServlet extends HttpServlet {
         request.getRequestDispatcher(CHECKOUT_PAGE).forward(request, response);
     }
 
-    // TODO validate
     // TODO ALL TESTS
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -68,22 +71,25 @@ public class CheckoutPageServlet extends HttpServlet {
         Cart cart = cartService.getCart(request);
         Order order = orderService.getOrder(cart);
 
+        setRequiredParameters(request, errors, order);
+
+        handleError(request, response, errors, order);
+    }
+
+    private void setRequiredParameters(HttpServletRequest request, Map<String, String> errors, Order order) {
         setRequiredParameter(request, FIRST_NAME_PARAMETER, errors, order::setFirstName);
         setRequiredParameter(request, LAST_NAME_PARAMETER, errors, order::setLastName);
         setRequiredParameter(request, PHONE_PARAMETER, errors, order::setPhone);
         setRequiredParameter(request, DELIVERY_ADDRESS_PARAMETER, errors, order::setDeliveryAddress);
         setRequiredParameter(request, FIRST_NAME_PARAMETER, errors, order::setFirstName);
         setPaymentMethod(request, errors, order);
-        //TODO deliveryDateParse
-        //setDeliveryDateParameter(request, errors, order);
-
-        handleError(request, response, errors, order);
+        setDeliveryDateParameter(request, errors, order);
     }
 
     private void handleError(HttpServletRequest request, HttpServletResponse response, Map<String, String> errors,
                              Order order) throws IOException, ServletException {
         if (errors.isEmpty()) {
-            orderService.placeOrder(order);
+            orderService.placeOrder(order, request);
             response.sendRedirect(String.format(REDIRECT_FORMAT, request.getContextPath(), OVERVIEW_PATH,
                     order.getSecureId()));
         } else {
@@ -98,9 +104,7 @@ public class CheckoutPageServlet extends HttpServlet {
                                       Consumer<String> consumer) {
         String value = request.getParameter(parameter);
 
-        if (StringUtils.isEmpty(value)) {
-            errors.put(parameter, messages.getString(ERROR_VALUE_REQUIRED));
-        } else {
+        if (!validateIsEmpty(value, errors, parameter)) {
             consumer.accept(value);
         }
     }
@@ -108,9 +112,7 @@ public class CheckoutPageServlet extends HttpServlet {
     private void setPaymentMethod(HttpServletRequest request, Map<String, String> errors, Order order) {
         String value = request.getParameter(PAYMENT_METHOD_PARAMETER);
 
-        if (StringUtils.isBlank(value)) {
-            errors.put(PAYMENT_METHOD_PARAMETER, ERROR_VALUE_REQUIRED);
-        } else {
+        if (!validateIsEmpty(value, errors, PAYMENT_METHOD_PARAMETER)) {
             order.setPaymentMethod(PaymentMethod.valueOf(value));
         }
     }
@@ -118,10 +120,32 @@ public class CheckoutPageServlet extends HttpServlet {
     private void setDeliveryDateParameter(HttpServletRequest request, Map<String, String> errors, Order order) {
         String value = request.getParameter(DELIVERY_DATE_PARAMETER);
 
-        if (StringUtils.isBlank(value)) {
-            errors.put(PAYMENT_METHOD_PARAMETER, ERROR_VALUE_REQUIRED);
+        if (!validateIsEmpty(value, errors, DELIVERY_DATE_PARAMETER)) {
+            try {
+                order.setDeliveryDate(validateDate(value));
+            } catch (UnexpectedDateException exception) {
+                errors.put(DELIVERY_DATE_PARAMETER, messages.getString(ERROR_DATE_FORMAT));
+            }
+        }
+    }
+
+    private LocalDate validateDate(String dateString) throws UnexpectedDateException {
+        LocalDate localDate = LocalDate.parse(dateString);
+
+        if (localDate.isBefore(LocalDate.now())
+                || localDate.isAfter(LocalDate.now().plusMonths(AMOUNT_ACTIVE_PERIOD_OF_MONTHS))) {
+            throw new UnexpectedDateException();
+        }
+
+        return localDate;
+    }
+
+    private boolean validateIsEmpty(String value, Map<String, String> errors, String parameter) {
+        if (value.isEmpty()) {
+            errors.put(parameter, messages.getString(ERROR_VALUE_REQUIRED));
+            return true;
         } else {
-            order.setPaymentMethod(PaymentMethod.valueOf(value));
+            return false;
         }
     }
 }

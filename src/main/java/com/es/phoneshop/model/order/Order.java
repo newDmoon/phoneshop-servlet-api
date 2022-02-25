@@ -1,11 +1,12 @@
 package com.es.phoneshop.model.order;
 
+import com.es.phoneshop.model.Entity;
 import com.es.phoneshop.model.cart.Cart;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public class Order extends Cart {
+public class Order extends Cart implements Entity {
     private Long id;
     private BigDecimal subTotal;
     private BigDecimal deliveryCost;
@@ -15,11 +16,15 @@ public class Order extends Cart {
     private LocalDate deliveryDate;
     private String deliveryAddress;
     private String secureId;
+    private PaymentMethod paymentMethod;
 
     public Long getId() {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getSecureId() {
         return secureId;
@@ -29,15 +34,12 @@ public class Order extends Cart {
         this.secureId = secureId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    private PaymentMethod paymentMethod;
-
-
     public BigDecimal getDeliveryCost() {
         return deliveryCost;
+    }
+
+    public void setDeliveryCost(BigDecimal deliveryCost) {
+        this.deliveryCost = deliveryCost;
     }
 
     public String getFirstName() {
@@ -86,10 +88,6 @@ public class Order extends Cart {
 
     public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
-    }
-
-    public void setDeliveryCost(BigDecimal deliveryCost) {
-        this.deliveryCost = deliveryCost;
     }
 
     public BigDecimal getSubTotal() {

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 
 public class ProductListPageServlet extends HttpServlet {
     private final String PRODUCTS_ATTRIBUTE = "products";
@@ -40,6 +41,7 @@ public class ProductListPageServlet extends HttpServlet {
     private final String PRODUCTS_PATH = "/products";
     private final String REDIRECT_FORMAT = "%s%s";
     private final String PRODUCT_LIST_PAGE = "/WEB-INF/pages/productList.jsp";
+    private final String DIGIT_REGEX = "^\\d+$";
 
     private ProductDao productDao;
     private CartService cartService;
@@ -82,14 +84,14 @@ public class ProductListPageServlet extends HttpServlet {
             int quantity = parseQuantity(request, quantityString);
             Long productId = parseProductId(productIdString);
             cartService.add(cartService.getCart(request), productId, quantity);
-        } catch (ParseException e) {
+        } catch (ParseException exception) {
             request.setAttribute(ERROR_PARAMETER, messages.getString(ERROR_NUMBER_FORMAT_MESSAGE));
             doGet(request, response);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException exception) {
             request.setAttribute(ERROR_PARAMETER, messages.getString(ERROR_NON_POSITIVE_MESSAGE));
             doGet(request, response);
-        } catch (OutOfStockException e) {
-            Integer availableStock = e.getStockAvailable();
+        } catch (OutOfStockException exception) {
+            Integer availableStock = exception.getStockAvailable();
             request.setAttribute(ERROR_PARAMETER, String.join(StringUtils.SPACE,
                     messages.getString(ERROR_STOCK_MESSAGE), availableStock.toString()));
             doGet(request, response);
@@ -98,12 +100,20 @@ public class ProductListPageServlet extends HttpServlet {
         response.sendRedirect(String.format(REDIRECT_FORMAT, request.getContextPath(), PRODUCTS_PATH));
     }
 
-    private int parseQuantity(HttpServletRequest request, String quantityParameter) throws ParseException {
+    private int parseQuantity(HttpServletRequest request, String quantityString) throws ParseException {
+        if (!validateInteger(quantityString)) {
+            throw new NumberFormatException();
+        }
         NumberFormat numberFormat = NumberFormat.getInstance(request.getLocale());
-        return numberFormat.parse(quantityParameter).intValue();
+
+        return numberFormat.parse(quantityString).intValue();
     }
 
     private Long parseProductId(String productIdString) throws NumberFormatException {
         return Long.valueOf(productIdString);
+    }
+
+    private boolean validateInteger(String stringToCheck) {
+        return Pattern.matches(DIGIT_REGEX, stringToCheck);
     }
 }

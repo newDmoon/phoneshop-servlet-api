@@ -4,17 +4,25 @@ import com.es.phoneshop.securiry.DosProtectionService;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 
 public class DosProtectionServiceImpl implements DosProtectionService {
-    private static final long THRESHOLD = 20;
-    private static final long MINUTES_LIMIT = 1L;
     private static volatile DosProtectionService instance;
     private static Object lock = new Object();
+
+    private final String CONSTANT_PROPERTY = "constant";
+    private final String CONSTANT_THRESHOLD_VALUE_PROPERTY = "constant.threshold.value";
+    private final String CONSTANT_MINUTES_LIMIT_VALUE_PROPERTY = "constant.minutesLimit.value";
+
+    private ResourceBundle constant = ResourceBundle.getBundle(CONSTANT_PROPERTY);
     private Map<String, Long> countMap = new ConcurrentHashMap();
     private Map<String, LocalDateTime> timeMap = new ConcurrentHashMap();
+
+    private DosProtectionServiceImpl() {
+    }
 
     public static DosProtectionService getInstance() {
         if (instance == null) {
@@ -27,9 +35,6 @@ public class DosProtectionServiceImpl implements DosProtectionService {
         return instance;
     }
 
-    private DosProtectionServiceImpl() {
-    }
-
     @Override
     public boolean isAllowed(String ip) {
         Long counter = countMap.get(ip);
@@ -38,11 +43,13 @@ public class DosProtectionServiceImpl implements DosProtectionService {
 
         long minutesActive = calculateActiveTime(currentDate, lastDate);
 
-        if (counter == null || lastDate == null || minutesActive > MINUTES_LIMIT) {
+        if (counter == null || lastDate == null
+                || minutesActive > Integer.parseInt(constant.getString(CONSTANT_MINUTES_LIMIT_VALUE_PROPERTY))) {
             lastDate = LocalDateTime.now();
             counter = 1L;
         } else {
-            if (counter > THRESHOLD && minutesActive < MINUTES_LIMIT) {
+            if (counter > Long.parseLong(constant.getString(CONSTANT_THRESHOLD_VALUE_PROPERTY))
+                    && minutesActive < Integer.parseInt(constant.getString(CONSTANT_MINUTES_LIMIT_VALUE_PROPERTY))) {
                 return false;
             }
             counter++;

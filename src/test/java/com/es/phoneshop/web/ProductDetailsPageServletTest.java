@@ -16,6 +16,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -44,6 +45,8 @@ public class ProductDetailsPageServletTest {
     @Mock
     private ServletConfig config;
     @Mock
+    private HttpSession session;
+    @Mock
     private RecentlyViewedProductsService recentlyViewedProductsService;
 
     private ProductDao productDao;
@@ -52,6 +55,7 @@ public class ProductDetailsPageServletTest {
     @Before
     public void setup() throws ServletException {
         servlet.init(config);
+        when(request.getSession()).thenReturn(session);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
     }
 

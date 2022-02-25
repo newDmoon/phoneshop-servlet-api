@@ -46,7 +46,7 @@ public class RecentlyViewedProductsServiceImpl implements RecentlyViewedProducts
 
     @Override
     public void addToRecentlyViewed(ArrayList<Product> recentlyViewedProducts, Long productId) {
-        Product product = productDao.getProduct(productId);
+        Product product = productDao.getById(productId);
         if (recentlyViewedProducts == null) {
             throw new IllegalArgumentException();
         }

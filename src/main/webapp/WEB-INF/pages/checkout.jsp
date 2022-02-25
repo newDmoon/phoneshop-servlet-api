@@ -1,3 +1,5 @@
+<%@ page import="java.time.LocalDate" %>
+<%@ page import="java.time.LocalDateTime" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -59,18 +61,14 @@
                     </tr>
                 </c:forEach>
                 <tr>
-                    <td colspan="2">
-                    </td>
-                    <td colspan="2">
+                    <td colspan="4">
                         Subtotal:
                         <fmt:formatNumber value="${order.subTotal}" type="currency"
                                           currencySymbol="$"/>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2">
-                    </td>
-                    <td colspan="2">
+                    <td colspan="4">
                         Delivery cost:
                         <fmt:formatNumber value="${order.deliveryCost}" type="currency"
                                           currencySymbol="$"/>
@@ -78,9 +76,7 @@
                 </tr>
                 </tr>
                 <tr>
-                    <td colspan="2">
-                    </td>
-                    <td colspan="2">
+                    <td colspan="4">
                         Total cost:
                         <fmt:formatNumber value="${order.totalCost}" type="currency"
                                           currencySymbol="$"/>
@@ -89,11 +85,25 @@
             </table>
             <h2>Your details</h2>
             <table>
-                <tags:orderFormRow name="firstName" label="First Name" order="${order}" errors="${errors}"></tags:orderFormRow>
-                <tags:orderFormRow name="lastName" label="Last Name" order="${order}" errors="${errors}"></tags:orderFormRow>
+                <tags:orderFormRow name="firstName" label="First Name" order="${order}"
+                                   errors="${errors}"></tags:orderFormRow>
+                <tags:orderFormRow name="lastName" label="Last Name" order="${order}"
+                                   errors="${errors}"></tags:orderFormRow>
                 <tags:orderFormRow name="phone" label="Phone" order="${order}" errors="${errors}"></tags:orderFormRow>
-                <tags:orderFormRow name="deliveryDate" label="Delivery Date" order="${order}" errors="${errors}"></tags:orderFormRow>
-                <tags:orderFormRow name="deliveryAddress" label="Delivery Address" order="${order}" errors="${errors}"></tags:orderFormRow>
+                <tags:orderFormRow name="deliveryAddress" label="Delivery Address" order="${order}"
+                                   errors="${errors}"></tags:orderFormRow>
+                <tr>
+                    <c:set var="error" value="${errors['deliveryDate']}"/>
+                    <td>Delivery Date<span class="required">*</span></td>
+                    <td><input type="date" name="deliveryDate"
+                               value="${not empty error ? param.deliveryDate : LocalDate.now()}">
+                        <c:if test="${not empty error}">
+                            <div class="error">
+                                    ${error}
+                            </div>
+                        </c:if>
+                    </td>
+                </tr>
                 <tr>
                     <td>Payment method<span class="required">*</span></td>
                     <td><select name="paymentMethod">
