@@ -16,6 +16,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProductDetailsPageServletTest {
-    private static final String SLASH = "/";
+    private final String SLASH = "/";
     private final Currency USD = Currency.getInstance("USD");
     private final Long idTest = 1L;
     private final String codeTest = "test-product";
@@ -35,6 +36,7 @@ public class ProductDetailsPageServletTest {
     private final int stockTest = 100;
     private final String imageUrlTest = "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg";
     private final String INVALID_STRING_PATH = "/sdfs";
+
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -44,6 +46,8 @@ public class ProductDetailsPageServletTest {
     @Mock
     private ServletConfig config;
     @Mock
+    private HttpSession session;
+    @Mock
     private RecentlyViewedProductsService recentlyViewedProductsService;
 
     private ProductDao productDao;
@@ -52,6 +56,7 @@ public class ProductDetailsPageServletTest {
     @Before
     public void setup() throws ServletException {
         servlet.init(config);
+        when(request.getSession()).thenReturn(session);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
     }
 
@@ -66,7 +71,7 @@ public class ProductDetailsPageServletTest {
                 .setStock(stockTest)
                 .setImageUrl(imageUrlTest)
                 .build();
-        productDao.save(testProduct);
+        productDao.saveItem(testProduct);
         when(request.getPathInfo()).thenReturn(SLASH + idTest);
 
         servlet.doGet(request, response);

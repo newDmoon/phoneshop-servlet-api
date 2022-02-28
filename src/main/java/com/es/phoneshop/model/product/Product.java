@@ -1,5 +1,6 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.model.Entity;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
@@ -8,7 +9,7 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Objects;
 
-public class Product implements Serializable {
+public class Product implements Serializable, Entity {
     private Long id;
     private String code;
     private String description;

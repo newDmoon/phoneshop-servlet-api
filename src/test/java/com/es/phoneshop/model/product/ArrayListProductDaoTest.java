@@ -23,6 +23,7 @@ public class ArrayListProductDaoTest {
     private final BigDecimal priceTest = new BigDecimal(100);
     private final int stockTest = 100;
     private final String imageUrlTest = "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg";
+
     private ProductDao productDao;
 
     @Before
@@ -32,7 +33,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void shouldFindProductsNoResults() {
-        assertTrue(productDao.findProducts(codeTest,null, null).isEmpty());
+        assertTrue(productDao.findProducts(codeTest, null, null).isEmpty());
     }
 
     @Test
@@ -45,15 +46,15 @@ public class ArrayListProductDaoTest {
                 .setImageUrl(imageUrlTest)
                 .build();
 
-        productDao.save(productTest);
+        productDao.saveItem(productTest);
 
-        assertNotNull(productDao.getProduct(productTest.getId()));
+        assertNotNull(productDao.getElementById(productTest.getId()));
     }
 
     @Test
     public void shouldThrowExceptionWhenGetNullProduct() {
         assertThrows(IllegalArgumentException.class, () -> {
-            productDao.getProduct(null);
+            productDao.getElementById(null);
         });
     }
 
@@ -67,8 +68,8 @@ public class ArrayListProductDaoTest {
                 .setImageUrl(imageUrlTest)
                 .build();
 
-        productDao.save(productTest);
-        Product result = productDao.getProduct(Long.valueOf(productTest.getId()));
+        productDao.saveItem(productTest);
+        Product result = productDao.getElementById(Long.valueOf(productTest.getId()));
 
         assertTrue(productTest.getId() > 0);
         assertNotNull(result);
@@ -84,8 +85,8 @@ public class ArrayListProductDaoTest {
                 .setImageUrl(imageUrlTest)
                 .build();
 
-        productDao.save(productTest);
+        productDao.saveItem(productTest);
         productDao.delete(productTest.getId());
-        productDao.getProduct(productTest.getId());
+        productDao.getElementById(productTest.getId());
     }
 }

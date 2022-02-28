@@ -65,7 +65,7 @@ public class RecentlyViewedProductsServiceImplTest {
                 .setStock(stockTest)
                 .setImageUrl(imageUrlTest)
                 .build();
-        productDao.save(productTest);
+        productDao.saveItem(productTest);
 
         recentlyViewedProductsService.addToRecentlyViewed(null, productIdTest);
     }
@@ -95,7 +95,7 @@ public class RecentlyViewedProductsServiceImplTest {
                 .setStock(stockTest)
                 .setImageUrl(imageUrlTest)
                 .build();
-        productDao.save(productTest);
+        productDao.saveItem(productTest);
         ArrayList<Product> recentlyViewedProducts = new ArrayList<>();
 
         recentlyViewedProductsService.addToRecentlyViewed(recentlyViewedProducts, productIdTest);
@@ -117,7 +117,7 @@ public class RecentlyViewedProductsServiceImplTest {
                 .setStock(stockTest)
                 .setImageUrl(imageUrlTest)
                 .build();
-        productDao.save(productTest);
+        productDao.saveItem(productTest);
         ArrayList<Product> recentlyViewedProducts = new ArrayList<>();
 
         recentlyViewedProductsService.addToRecentlyViewed(recentlyViewedProducts, productIdTest);

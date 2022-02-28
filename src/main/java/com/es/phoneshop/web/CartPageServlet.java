@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 public class CartPageServlet extends HttpServlet {
@@ -32,6 +33,8 @@ public class CartPageServlet extends HttpServlet {
     private final String PRODUCT_ID_PARAMETER = "productId";
     private final String BASE_NAME_PATH = "error";
     private final String REDIRECT_FORMAT = "%s%s";
+    private final String DIGIT_REGEX = "^\\d+$";
+
     private CartService cartService;
     private Locale currentLocale;
     private ResourceBundle messages;
@@ -48,10 +51,10 @@ public class CartPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Cart cart = cartService.getCart(request);
         request.setAttribute(CART_ATTRIBUTE, cart);
+
         request.getRequestDispatcher(CART_PAGE).forward(request, response);
     }
 
-    // TODO map
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map<String, String> parametersMap = getParametersAsMap(request);
@@ -93,20 +96,28 @@ public class CartPageServlet extends HttpServlet {
         }
     }
 
-    private int parseQuantity(HttpServletRequest request, String quantityParameter) throws ParseException {
+    private int parseQuantity(HttpServletRequest request, String quantityString) throws ParseException {
         NumberFormat numberFormat = NumberFormat.getInstance(request.getLocale());
 
-        return numberFormat.parse(quantityParameter).intValue();
+        if (!validateInteger(quantityString)) {
+            throw new NumberFormatException();
+        }
+
+        return numberFormat.parse(quantityString).intValue();
     }
 
-    private Map<String, String> getParametersAsMap(HttpServletRequest request){
+    private Map<String, String> getParametersAsMap(HttpServletRequest request) {
         String[] productIds = request.getParameterValues(PRODUCT_ID_PARAMETER);
         String[] quantities = request.getParameterValues(QUANTITY_PARAMETER);
         Map<String, String> parametersMap = new HashMap<>();
 
         IntStream.range(0, productIds.length)
-                .forEach(index -> parametersMap.put(productIds[index] ,quantities[index]));
+                .forEach(index -> parametersMap.put(productIds[index], quantities[index]));
 
         return parametersMap;
+    }
+
+    private boolean validateInteger(String stringToCheck) {
+        return Pattern.matches(DIGIT_REGEX, stringToCheck);
     }
 }

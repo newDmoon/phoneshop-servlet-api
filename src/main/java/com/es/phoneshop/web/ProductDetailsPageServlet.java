@@ -22,6 +22,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 
 
 public class ProductDetailsPageServlet extends HttpServlet {
@@ -39,6 +40,8 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private final String BASE_NAME_PATH = "error";
     private final String REDIRECT_FORMAT = "%s%s%s%s";
     private final int START_INDEX_WITHOUT_SLASH = 1;
+    private final String DIGIT_REGEX = "^\\d+$";
+
     private ProductDao productDao;
     private CartService cartService;
     private RecentlyViewedProductsService recentlyViewedProductsService;
@@ -60,9 +63,11 @@ public class ProductDetailsPageServlet extends HttpServlet {
         Long productId = parseProductId(request);
         ArrayList<Product> recentlyViewedProducts = recentlyViewedProductsService.getRecentlyViewedProducts(request);
         recentlyViewedProductsService.addToRecentlyViewed(recentlyViewedProducts, productId);
-        request.setAttribute(PRODUCT_ATTRIBUTE, productDao.getProduct(productId));
+
+        request.setAttribute(PRODUCT_ATTRIBUTE, productDao.getElementById(productId));
         request.setAttribute(CART_ATTRIBUTE, cartService.getCart(request));
         request.setAttribute(RECENT_PRODUCTS_ATTRIBUTE, recentlyViewedProducts);
+
         request.getRequestDispatcher(PRODUCT_DETAILS_PAGE).forward(request, response);
     }
 
@@ -108,11 +113,14 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     private int parseQuantity(HttpServletRequest request) throws ParseException, IllegalArgumentException {
         NumberFormat numberFormat = NumberFormat.getInstance(request.getLocale());
-        String parameterQuantity = request.getParameter(QUANTITY_PARAMETER);
-        int quantity = numberFormat.parse(parameterQuantity).intValue();
-        if (quantity <= 0) {
-            throw new IllegalArgumentException();
+        String quantityString = request.getParameter(QUANTITY_PARAMETER);
+        if (!validateInteger(quantityString)) {
+            throw new NumberFormatException();
         }
-        return quantity;
+        return numberFormat.parse(quantityString).intValue();
+    }
+
+    private boolean validateInteger(String stringToCheck) {
+        return Pattern.matches(DIGIT_REGEX, stringToCheck);
     }
 }
