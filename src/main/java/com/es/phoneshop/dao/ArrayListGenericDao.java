@@ -6,20 +6,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public abstract class ArrayListGenericDao<T extends Entity> implements GenericDao<T>{
+public abstract class ArrayListGenericDao<T extends Entity> implements GenericDao<T> {
     private static Long maxId = 0L;
+
     private final Object lock = new Object();
 
-    private List<T> list;
+    private List<T> listItems;
 
     public ArrayListGenericDao() {
-        this.list = new ArrayList<>();
+        this.listItems = new ArrayList<>();
     }
 
-    public T getById(Long id) throws NoSuchElementException {
+    public T getElementById(Long id) throws NoSuchElementException {
         synchronized (lock) {
             if (id != null) {
-                return list.stream()
+                return listItems.stream()
                         .filter(listItem -> id.equals(listItem.getId()))
                         .findAny()
                         .orElseThrow(NoSuchElementException::new);
@@ -29,29 +30,25 @@ public abstract class ArrayListGenericDao<T extends Entity> implements GenericDa
         }
     }
 
-    public List<T> getList() {
-        return list;
+    public List<T> getListItems() {
+        return listItems;
     }
 
-    public void setList(List<T> list) {
-        this.list = list;
-    }
-
-    public void save(T item) {
+    public void saveItem(T item) {
         synchronized (lock) {
             if (item != null) {
                 if (item.getId() == null) {
                     item.setId(maxId++);
-                    list.add(item);
+                    listItems.add(item);
                 } else {
-                    if (list.stream()
+                    if (listItems.stream()
                             .anyMatch(productElem -> item.getId().equals(productElem.getId()))) {
-                        list.set(list.indexOf(list.stream()
+                        listItems.set(listItems.indexOf(listItems.stream()
                                 .filter(productElem -> item.getId().equals(productElem.getId()))
                                 .findAny()
                                 .get()), item);
                     } else {
-                        list.add(item);
+                        listItems.add(item);
                     }
                 }
             } else throw new IllegalArgumentException();

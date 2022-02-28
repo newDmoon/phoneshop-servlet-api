@@ -116,7 +116,7 @@
 
     <filter>
         <filter-name>dosFilter</filter-name>
-        <filter-class>com.es.phoneshop.web.DosFilter</filter-class>
+        <filter-class>com.es.phoneshop.web.DosFilterServlet</filter-class>
     </filter>
 
     <filter-mapping>

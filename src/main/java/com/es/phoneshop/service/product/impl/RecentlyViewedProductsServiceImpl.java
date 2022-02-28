@@ -9,12 +9,14 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 
 public class RecentlyViewedProductsServiceImpl implements RecentlyViewedProductsService {
+    private static volatile RecentlyViewedProductsService instance;
+    private static Object lock = new Object();
+
     private final String SESSION_RECENTLY_VIEWED_PRODUCTS_ATTRIBUTE
             = RecentlyViewedProductsServiceImpl.class.getName() + ".recentlyViewedProducts";
+
     private final int MAX_AMOUNT_RECENT_PRODUCTS = 3;
-    private static volatile RecentlyViewedProductsService instance;
     private ProductDao productDao;
-    private static Object lock = new Object();
 
     private RecentlyViewedProductsServiceImpl() {
         productDao = ArrayListProductDao.getInstance();
@@ -46,7 +48,7 @@ public class RecentlyViewedProductsServiceImpl implements RecentlyViewedProducts
 
     @Override
     public void addToRecentlyViewed(ArrayList<Product> recentlyViewedProducts, Long productId) {
-        Product product = productDao.getById(productId);
+        Product product = productDao.getElementById(productId);
         if (recentlyViewedProducts == null) {
             throw new IllegalArgumentException();
         }

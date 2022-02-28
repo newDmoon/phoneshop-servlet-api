@@ -14,6 +14,7 @@ public class ProductPriceHistoryPageServlet extends HttpServlet {
     private final String PRODUCT_ATTRIBUTE = "product";
     private final String PRODUCT_PRICE_HISTORY_PAGE = "/WEB-INF/pages/productPriceHistory.jsp";
     private final int START_INDEX_WITHOUT_SLASH = 1;
+
     private ProductDao productDao;
 
     @Override
@@ -26,7 +27,7 @@ public class ProductPriceHistoryPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String productId = req.getPathInfo().substring(START_INDEX_WITHOUT_SLASH);
 
-        req.setAttribute(PRODUCT_ATTRIBUTE, productDao.getById(Long.valueOf(productId)));
+        req.setAttribute(PRODUCT_ATTRIBUTE, productDao.getElementById(Long.valueOf(productId)));
 
         req.getRequestDispatcher(PRODUCT_PRICE_HISTORY_PAGE).forward(req, resp);
     }

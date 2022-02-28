@@ -3,6 +3,7 @@ package com.es.phoneshop.web;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -24,6 +25,11 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MiniCartServletTest extends HttpServlet {
+    private final String CART_PAGE = "/WEB-INF/pages/minicart.jsp";
+    private final String CART_ATTRIBUTE = "cart";
+
+    @InjectMocks
+    private MiniCartServlet servlet = new MiniCartServlet();
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -34,10 +40,6 @@ public class MiniCartServletTest extends HttpServlet {
     private HttpSession session;
     @Mock
     private ServletConfig config;
-
-    private final String CART_PAGE = "/WEB-INF/pages/minicart.jsp";
-    private final String CART_ATTRIBUTE = "cart";
-    MiniCartServlet servlet = new MiniCartServlet();
 
     @Before
     public void setUp() throws Exception {
@@ -63,6 +65,13 @@ public class MiniCartServletTest extends HttpServlet {
     @Test
     public void shouldInvokeIncludeWhenDoGet() throws ServletException, IOException {
         servlet.doGet(request, response);
+
+        verify(requestDispatcher, times(1)).include(request, response);
+    }
+
+    @Test
+    public void shouldInvokeDoGetWhenDoPost() throws ServletException, IOException {
+        servlet.doPost(request, response);
 
         verify(requestDispatcher, times(1)).include(request, response);
     }

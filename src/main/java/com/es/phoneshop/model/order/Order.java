@@ -2,6 +2,7 @@ package com.es.phoneshop.model.order;
 
 import com.es.phoneshop.model.Entity;
 import com.es.phoneshop.model.cart.Cart;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -97,5 +98,9 @@ public class Order extends Cart implements Entity {
     public void setSubTotal(BigDecimal subTotal) {
         this.subTotal = subTotal;
     }
-}
 
+    @Override
+    public String toString() {
+        return String.join(StringUtils.SPACE, id.toString(), secureId, paymentMethod.toString());
+    }
+}

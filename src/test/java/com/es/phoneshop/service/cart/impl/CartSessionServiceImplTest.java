@@ -65,7 +65,7 @@ public class CartSessionServiceImplTest {
                 .setImageUrl(imageUrlTest)
                 .build();
         Cart cart = new Cart();
-        productDao.save(productTest);
+        productDao.saveItem(productTest);
 
         cartService.add(cart, productIdTest, quantityIncorrectTest);
     }
@@ -81,7 +81,7 @@ public class CartSessionServiceImplTest {
                 .setImageUrl(imageUrlTest)
                 .build();
         Cart cart = new Cart();
-        productDao.save(productTest);
+        productDao.saveItem(productTest);
 
         cartService.add(cart, productIdTest, quantityNormalTest);
 
@@ -100,7 +100,7 @@ public class CartSessionServiceImplTest {
                 .setImageUrl(imageUrlTest)
                 .build();
         Cart cart = new Cart();
-        productDao.save(productTest);
+        productDao.saveItem(productTest);
 
         cartService.add(cart, productIdTest, quantityNormalTest);
         cartService.add(cart, productIdTest, quantityNormalTest);

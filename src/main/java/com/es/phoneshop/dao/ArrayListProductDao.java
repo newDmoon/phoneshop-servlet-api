@@ -16,7 +16,7 @@ public class ArrayListProductDao extends ArrayListGenericDao<Product> implements
     private final Object lock = new Object();
 
     private ArrayListProductDao() {
-        maxId = getList().size();
+        maxId = getListItems().size();
     }
 
     public static ProductDao getInstance() {
@@ -33,11 +33,11 @@ public class ArrayListProductDao extends ArrayListGenericDao<Product> implements
     @Override
     public List<Product> findProducts(String query, SortField sortField, SortOrder sortOrder) {
         synchronized (lock) {
-            return getList().stream()
+            return getListItems().stream()
                     .filter(product -> StringUtils.isEmpty(query) || product.getDescription().contains(query))
                     .filter(product -> product.getPrice() != null)
                     .filter(product -> product.getStock() > 0)
-                    .sorted(ProductComparator.compare(getList(), sortField, sortOrder))
+                    .sorted(ProductComparator.compare(getListItems(), sortField, sortOrder))
                     .collect(Collectors.toList());
         }
     }
@@ -46,7 +46,7 @@ public class ArrayListProductDao extends ArrayListGenericDao<Product> implements
     public void delete(Long id) {
         synchronized (lock) {
             if (id != null) {
-                getList().removeIf(product -> id.equals(product.getId()));
+                getListItems().removeIf(product -> id.equals(product.getId()));
             } else {
                 throw new IllegalArgumentException();
             }

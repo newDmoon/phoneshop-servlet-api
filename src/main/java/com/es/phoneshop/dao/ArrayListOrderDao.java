@@ -10,7 +10,7 @@ public class ArrayListOrderDao extends ArrayListGenericDao<Order> implements Ord
     private final Object lock = new Object();
 
     private ArrayListOrderDao() {
-        maxId = getList().size();
+        maxId = getListItems().size();
     }
 
     public static OrderDao getInstance() {
@@ -28,7 +28,7 @@ public class ArrayListOrderDao extends ArrayListGenericDao<Order> implements Ord
     public Order getOrderBySecureId(String secureId) throws OrderNotFoundException {
         synchronized (lock) {
             if (secureId != null) {
-                return getList().stream()
+                return getListItems().stream()
                         .filter(order -> secureId.equals(order.getSecureId()))
                         .findAny()
                         .orElseThrow(OrderNotFoundException::new);

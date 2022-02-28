@@ -49,7 +49,7 @@ public class CartSessionServiceImpl implements CartService {
     @Override
     public void add(Cart cart, Long productId, int quantity) throws OutOfStockException {
         synchronized (lock) {
-            Product product = productDao.getById(productId);
+            Product product = productDao.getElementById(productId);
             if (quantity <= 0) {
                 throw new IllegalArgumentException();
             }
@@ -59,6 +59,7 @@ public class CartSessionServiceImpl implements CartService {
             } else {
                 cart.getCartItems().add(new CartItem(product, quantity));
             }
+
             recalculateCartTotalQuantity(cart);
             recalculateCartTotalCost(cart);
         }
@@ -102,7 +103,7 @@ public class CartSessionServiceImpl implements CartService {
             throw new IllegalArgumentException();
         }
 
-        Product product = productDao.getById(productId);
+        Product product = productDao.getElementById(productId);
         if (product.getStock() < quantity) {
             throw new OutOfStockException(product, quantity, product.getStock());
         }

@@ -18,8 +18,8 @@ public class DosProtectionServiceImpl implements DosProtectionService {
     private final String CONSTANT_MINUTES_LIMIT_VALUE_PROPERTY = "constant.minutesLimit.value";
 
     private ResourceBundle constant = ResourceBundle.getBundle(CONSTANT_PROPERTY);
-    private Map<String, Long> countMap = new ConcurrentHashMap();
-    private Map<String, LocalDateTime> timeMap = new ConcurrentHashMap();
+    private Map<String, Long> amountOfRequestsMap = new ConcurrentHashMap();
+    private Map<String, LocalDateTime> lastRequestDateMap = new ConcurrentHashMap();
 
     private DosProtectionServiceImpl() {
     }
@@ -37,10 +37,9 @@ public class DosProtectionServiceImpl implements DosProtectionService {
 
     @Override
     public boolean isAllowed(String ip) {
-        Long counter = countMap.get(ip);
-        LocalDateTime lastDate = timeMap.get(ip);
+        Long counter = amountOfRequestsMap.get(ip);
+        LocalDateTime lastDate = lastRequestDateMap.get(ip);
         LocalDateTime currentDate = LocalDateTime.now();
-
         long minutesActive = calculateActiveTime(currentDate, lastDate);
 
         if (counter == null || lastDate == null
@@ -54,8 +53,9 @@ public class DosProtectionServiceImpl implements DosProtectionService {
             }
             counter++;
         }
-        timeMap.put(ip, lastDate);
-        countMap.put(ip, counter);
+
+        lastRequestDateMap.put(ip, lastDate);
+        amountOfRequestsMap.put(ip, counter);
         return true;
     }
 

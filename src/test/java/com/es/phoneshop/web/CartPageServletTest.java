@@ -30,6 +30,7 @@ public class CartPageServletTest {
     private final String CART_PAGE = "/WEB-INF/pages/cart.jsp";
     private final String QUANTITY_PARAMETER = "quantity";
     private final String PRODUCT_ID_PARAMETER = "productId";
+    private final String PRODUCT_ID_STRING_TEST = "500";
 
     @Mock
     private HttpServletResponse response;
@@ -66,10 +67,9 @@ public class CartPageServletTest {
 
     @Test(expected = NoSuchElementException.class)
     public void shouldThrowExceptionWhenInvalidProductID() throws ServletException, IOException {
-        String TEST_PRODUCT_ID = "1";
         servlet.init(config);
-        when(request.getParameterValues(PRODUCT_ID_PARAMETER)).thenReturn(new String[]{TEST_PRODUCT_ID});
-        when(request.getParameterValues(QUANTITY_PARAMETER)).thenReturn(new String[]{TEST_PRODUCT_ID});
+        when(request.getParameterValues(PRODUCT_ID_PARAMETER)).thenReturn(new String[]{PRODUCT_ID_STRING_TEST});
+        when(request.getParameterValues(QUANTITY_PARAMETER)).thenReturn(new String[]{PRODUCT_ID_STRING_TEST});
 
         servlet.doPost(request, response);
     }
@@ -77,6 +77,7 @@ public class CartPageServletTest {
     @Test
     public void shouldDoPostWhenCorrectAllData() throws ServletException, IOException, OutOfStockException {
         servlet.init(config);
+
         cartService.update(any(), anyLong(), anyInt());
     }
 }

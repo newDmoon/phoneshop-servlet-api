@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProductDetailsPageServletTest {
-    private static final String SLASH = "/";
+    private final String SLASH = "/";
     private final Currency USD = Currency.getInstance("USD");
     private final Long idTest = 1L;
     private final String codeTest = "test-product";
@@ -36,6 +36,7 @@ public class ProductDetailsPageServletTest {
     private final int stockTest = 100;
     private final String imageUrlTest = "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg";
     private final String INVALID_STRING_PATH = "/sdfs";
+
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -70,7 +71,7 @@ public class ProductDetailsPageServletTest {
                 .setStock(stockTest)
                 .setImageUrl(imageUrlTest)
                 .build();
-        productDao.save(testProduct);
+        productDao.saveItem(testProduct);
         when(request.getPathInfo()).thenReturn(SLASH + idTest);
 
         servlet.doGet(request, response);

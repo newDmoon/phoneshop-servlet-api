@@ -8,6 +8,7 @@ import com.es.phoneshop.service.cart.CartService;
 import com.es.phoneshop.service.cart.impl.CartSessionServiceImpl;
 import com.es.phoneshop.service.order.OrderService;
 import com.es.phoneshop.service.order.impl.OrderServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -64,7 +65,6 @@ public class CheckoutPageServlet extends HttpServlet {
         request.getRequestDispatcher(CHECKOUT_PAGE).forward(request, response);
     }
 
-    // TODO ALL TESTS
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map<String, String> errors = new HashMap<>();
@@ -136,12 +136,11 @@ public class CheckoutPageServlet extends HttpServlet {
                 || localDate.isAfter(LocalDate.now().plusMonths(AMOUNT_ACTIVE_PERIOD_OF_MONTHS))) {
             throw new UnexpectedDateException();
         }
-
         return localDate;
     }
 
     private boolean validateIsEmpty(String value, Map<String, String> errors, String parameter) {
-        if (value.isEmpty()) {
+        if (StringUtils.isEmpty(value)) {
             errors.put(parameter, messages.getString(ERROR_VALUE_REQUIRED));
             return true;
         } else {

@@ -46,15 +46,15 @@ public class ArrayListProductDaoTest {
                 .setImageUrl(imageUrlTest)
                 .build();
 
-        productDao.save(productTest);
+        productDao.saveItem(productTest);
 
-        assertNotNull(productDao.getById(productTest.getId()));
+        assertNotNull(productDao.getElementById(productTest.getId()));
     }
 
     @Test
     public void shouldThrowExceptionWhenGetNullProduct() {
         assertThrows(IllegalArgumentException.class, () -> {
-            productDao.getById(null);
+            productDao.getElementById(null);
         });
     }
 
@@ -68,8 +68,8 @@ public class ArrayListProductDaoTest {
                 .setImageUrl(imageUrlTest)
                 .build();
 
-        productDao.save(productTest);
-        Product result = productDao.getById(Long.valueOf(productTest.getId()));
+        productDao.saveItem(productTest);
+        Product result = productDao.getElementById(Long.valueOf(productTest.getId()));
 
         assertTrue(productTest.getId() > 0);
         assertNotNull(result);
@@ -85,8 +85,8 @@ public class ArrayListProductDaoTest {
                 .setImageUrl(imageUrlTest)
                 .build();
 
-        productDao.save(productTest);
+        productDao.saveItem(productTest);
         productDao.delete(productTest.getId());
-        productDao.getById(productTest.getId());
+        productDao.getElementById(productTest.getId());
     }
 }

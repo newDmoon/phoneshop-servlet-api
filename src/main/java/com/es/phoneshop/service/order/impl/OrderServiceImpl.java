@@ -21,6 +21,7 @@ import java.util.UUID;
 
 public class OrderServiceImpl implements OrderService {
     private static volatile OrderService instance;
+
     private final String CONSTANT_PROPERTY = "constant";
     private final String DELIVERY_COST_VALUE_PROPERTY = "constant.deliveryCost.value";
     private final Object lock = new Object();
@@ -60,7 +61,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void placeOrder(Order order, HttpServletRequest request) {
         order.setSecureId(UUID.randomUUID().toString());
-        orderDao.save(order);
+        orderDao.saveItem(order);
         cartService.clearCart(request);
     }
 
@@ -73,6 +74,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private Order completeOrder(Order order, Cart cart) {
+        if (cart == null) {
+            throw new IllegalArgumentException();
+        }
         order.setCartItems(SerializationUtils.clone((ArrayList<CartItem>) cart.getCartItems()));
         order.setSubTotal(cart.getTotalCost());
         order.setDeliveryCost(getDeliveryCost());
