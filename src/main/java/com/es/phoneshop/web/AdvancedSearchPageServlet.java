@@ -62,10 +62,8 @@ public class AdvancedSearchPageServlet extends HttpServlet {
         String value = request.getParameter(parameter);
 
         try {
-            if(StringUtils.isEmpty(value)){
-                throw new NullPointerException();
-            }
-            Integer parsedInteger = Integer.parseInt(value);
+            validateIsEmpty(value);
+            Integer parsedInteger = parseInteger(value);
             consumer.accept(parsedInteger);
         } catch (NullPointerException e) {
             consumer.accept(0);
@@ -76,15 +74,12 @@ public class AdvancedSearchPageServlet extends HttpServlet {
     }
 
     private void setRequiredParameterPrice(HttpServletRequest request, String parameter, Map<String, String> errors,
-                                               Consumer<BigDecimal> consumer) {
+                                           Consumer<BigDecimal> consumer) {
         String value = request.getParameter(parameter);
 
         try {
-            if(StringUtils.isEmpty(value)){
-                throw new NullPointerException();
-            }
-            BigDecimal parsedValue = BigDecimal.valueOf(Long.parseLong(value));
-            consumer.accept(parsedValue);
+            validateIsEmpty(value);
+            consumer.accept(parseBigDecimal(value));
         } catch (NullPointerException e) {
             consumer.accept(null);
         } catch (NumberFormatException e) {
@@ -93,15 +88,19 @@ public class AdvancedSearchPageServlet extends HttpServlet {
         }
     }
 
-    private Integer parseInteger(String value) {
-        return Integer.valueOf(value);
+    private Integer parseInteger(String value) throws NumberFormatException {
+        Integer parsedValue = Integer.valueOf(value);
+        return parsedValue;
     }
 
-    private BigDecimal parseBigDecimal(String value) {
-        return BigDecimal.valueOf(Long.parseLong(value));
+    private BigDecimal parseBigDecimal(String value) throws NumberFormatException {
+        BigDecimal parsedValue = BigDecimal.valueOf(Long.parseLong(value));
+        return parsedValue;
     }
 
-    private  boolean validate(){
-        return true;
+    private void validateIsEmpty(String value) {
+        if (StringUtils.isEmpty(value)) {
+            throw new NullPointerException();
+        }
     }
 }
