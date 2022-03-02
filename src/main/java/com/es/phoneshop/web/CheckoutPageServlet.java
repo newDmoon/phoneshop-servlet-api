@@ -86,19 +86,19 @@ public class CheckoutPageServlet extends HttpServlet {
         setDeliveryDateParameter(request, errors, order);
     }
 
-    private void handleError(HttpServletRequest request, HttpServletResponse response, Map<String, String> errors,
-                             Order order) throws IOException, ServletException {
-        if (errors.isEmpty()) {
-            orderService.placeOrder(order, request);
-            response.sendRedirect(String.format(REDIRECT_FORMAT, request.getContextPath(), OVERVIEW_PATH,
-                    order.getSecureId()));
-        } else {
-            request.setAttribute(ERRORS_ATTRIBUTE, errors);
-            request.setAttribute(ORDER_ATTRIBUTE, order);
-            request.setAttribute(PAYMENT_METHODS_ATTRIBUTE, orderService.getPaymentMethods());
-            request.getRequestDispatcher(CHECKOUT_PAGE).forward(request, response);
+        private void handleError(HttpServletRequest request, HttpServletResponse response, Map<String, String> errors,
+                                 Order order) throws IOException, ServletException {
+            if (errors.isEmpty()) {
+                orderService.placeOrder(order, request);
+                response.sendRedirect(String.format(REDIRECT_FORMAT, request.getContextPath(), OVERVIEW_PATH,
+                        order.getSecureId()));
+            } else {
+                request.setAttribute(ERRORS_ATTRIBUTE, errors);
+                request.setAttribute(ORDER_ATTRIBUTE, order);
+                request.setAttribute(PAYMENT_METHODS_ATTRIBUTE, orderService.getPaymentMethods());
+                request.getRequestDispatcher(CHECKOUT_PAGE).forward(request, response);
+            }
         }
-    }
 
     private void setRequiredParameter(HttpServletRequest request, String parameter, Map<String, String> errors,
                                       Consumer<String> consumer) {

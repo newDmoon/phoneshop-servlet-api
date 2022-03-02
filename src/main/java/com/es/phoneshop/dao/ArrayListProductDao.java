@@ -2,6 +2,7 @@ package com.es.phoneshop.dao;
 
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.util.ProductComparator;
+import com.es.phoneshop.model.product.util.ProductSearchFilter;
 import com.es.phoneshop.model.product.util.SortField;
 import com.es.phoneshop.model.product.util.SortOrder;
 import org.apache.commons.lang3.StringUtils;
@@ -39,6 +40,30 @@ public class ArrayListProductDao extends ArrayListGenericDao<Product> implements
                     .filter(product -> product.getStock() > 0)
                     .sorted(ProductComparator.compare(sortField, sortOrder))
                     .collect(Collectors.toList());
+        }
+    }
+
+    @Override
+    public List<Product> findProducts(ProductSearchFilter productSearchFilter) {
+        synchronized (lock) {
+            List<Product> resultList = getListItems();
+            resultList.stream()
+                    .filter(product -> StringUtils.isEmpty(productSearchFilter.getCode())
+                            || product.getCode().contains(productSearchFilter.getCode()))
+                    .collect(Collectors.toList());
+            resultList.stream()
+                    .filter(product -> StringUtils.isEmpty(productSearchFilter.getCode())
+                            || product.getCode().contains(productSearchFilter.getCode()))
+                    .collect(Collectors.toList());
+            resultList.stream()
+                    .filter(product -> StringUtils.isEmpty(productSearchFilter.getCode())
+                            || product.getCode().contains(productSearchFilter.getCode()))
+                    .collect(Collectors.toList());
+            resultList.stream()
+                    .filter(product -> StringUtils.isEmpty(productSearchFilter.getCode())
+                            || product.getCode().contains(productSearchFilter.getCode()))
+                    .collect(Collectors.toList());
+            return resultList;
         }
     }
 
