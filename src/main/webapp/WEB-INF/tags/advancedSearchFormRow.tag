@@ -5,14 +5,14 @@
 <%@ attribute name="errors" required="true" type="java.util.Map" %>
 
 <tr>
-  <td>${label}</td>
-  <td>
-    <c:set var="error" value="${errors[name]}"/>
-    <input name=${name} value="${param[name]}">
-    <c:if test="${not empty error}">
-      <div class="error">
-          ${error}
-      </div>
-    </c:if>
-  </td>
+    <td>${label}</td>
+    <td>
+        <c:set var="error" value="${errors[name]}"/>
+        <input name=${name} value="${param[name]}">
+        <c:if test="${not empty error}">
+            <div class="error">
+                    ${error}
+            </div>
+        </c:if>
+    </td>
 </tr>

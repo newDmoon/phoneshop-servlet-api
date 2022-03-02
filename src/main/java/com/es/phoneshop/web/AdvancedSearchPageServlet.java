@@ -9,7 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.text.html.parser.Parser;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -40,7 +39,7 @@ public class AdvancedSearchPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map<String, String> errors = new HashMap<>();
 
-        setRequiredParameter(request, CODE_PARAMETER, errors, productSearchFilter::setCode);
+        setRequiredParameter(request, CODE_PARAMETER, productSearchFilter::setCode);
         setRequiredParameterPrice(request, MIN_PRICE_PARAMETER, errors, productSearchFilter::setMinPrice);
         setRequiredParameterPrice(request, MAX_PRICE_PARAMETER, errors, productSearchFilter::setMaxPrice);
         setRequiredParameterStock(request, MIN_STOCK_PARAMETER, errors, productSearchFilter::setMinStock);
@@ -51,7 +50,7 @@ public class AdvancedSearchPageServlet extends HttpServlet {
         request.getRequestDispatcher(ADVANCED_SEARCH_PAGE).forward(request, response);
     }
 
-    private void setRequiredParameter(HttpServletRequest request, String parameter, Map<String, String> errors,
+    private void setRequiredParameter(HttpServletRequest request, String parameter,
                                       Consumer<String> consumer) {
         String value = request.getParameter(parameter);
 

@@ -5,24 +5,27 @@
 
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
 <tags:master pageTitle="Advanced Search">
-        <p>
-            <h1>Advanced search page</h1>
+    <p>
+    <h1>Advanced search page</h1>
+    </p>
+    <c:if test="${not empty errors}">
+        <p class="error" id="product-description-text">
+            There were errors searching
         </p>
-        <c:if test="${not empty errors}">
-            <p class="error" id="product-description-text">
-                There were errors searching
-            </p>
-        </c:if>
+    </c:if>
     <form>
         <table>
-            <tags:advancedSearchFormRow name="productCode" label="Product code" errors="${errors}"></tags:advancedSearchFormRow>
-            <tags:advancedSearchFormRow name="minPrice" label="Min price" errors="${errors}"></tags:advancedSearchFormRow>
-            <tags:advancedSearchFormRow name="maxPrice" label="Max price"  errors="${errors}"></tags:advancedSearchFormRow>
-            <tags:advancedSearchFormRow name="minStock" label="Min stock" errors="${errors}"></tags:advancedSearchFormRow>
+            <tags:advancedSearchFormRow name="productCode" label="Product code"
+                                        errors="${errors}"></tags:advancedSearchFormRow>
+            <tags:advancedSearchFormRow name="minPrice" label="Min price"
+                                        errors="${errors}"></tags:advancedSearchFormRow>
+            <tags:advancedSearchFormRow name="maxPrice" label="Max price"
+                                        errors="${errors}"></tags:advancedSearchFormRow>
+            <tags:advancedSearchFormRow name="minStock" label="Min stock"
+                                        errors="${errors}"></tags:advancedSearchFormRow>
         </table>
         <button>Search</button>
     </form>
-
     <table>
         <thead>
         <tr>
@@ -36,8 +39,8 @@
                 Found ${products.size()} products
             </c:if>
         </p>
-    <c:forEach var="product" items="${products}">
-        <tr>
+        <c:forEach var="product" items="${products}">
+            <tr>
                 <td>
                     <img src="${product.imageUrl}">
                 </td>
@@ -47,7 +50,7 @@
                         <fmt:formatNumber value="${product.price}" type="currency"
                                           currencySymbol="${product.currency.symbol}"/>
                     </a>
-        </tr>
-    </c:forEach>
+            </tr>
+        </c:forEach>
     </table>
 </tags:master>
