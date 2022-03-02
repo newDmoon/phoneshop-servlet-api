@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class DeleteCartItemServlet extends HttpServlet {
+    private final String SLASH = "/";
     private final int START_INDEX_WITHOUT_SLASH = 1;
     private final String MESSAGE_PARAMETER_SUCCESS_PRODUCT_ADD_TO_CART = "/cart?message=Cart item removed successfully";
     private CartService cartService;
@@ -29,6 +30,6 @@ public class DeleteCartItemServlet extends HttpServlet {
 
         cartService.delete(cart, Long.valueOf(productId));
 
-        response.sendRedirect(request.getContextPath() + MESSAGE_PARAMETER_SUCCESS_PRODUCT_ADD_TO_CART);
+        response.sendRedirect(String.join(SLASH, request.getContextPath(), MESSAGE_PARAMETER_SUCCESS_PRODUCT_ADD_TO_CART));
     }
 }
