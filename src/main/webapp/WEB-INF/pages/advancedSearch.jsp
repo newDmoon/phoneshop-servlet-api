@@ -29,6 +29,12 @@
             <th>Image</th>
             <th>Description</th>
             <th>Price</th>
+        </tr>
+        </thead>
+        <br/>
+        <p class="success">
+
+        </p>
     <c:forEach var="product" items="${products}">
         <tr>
                 <td>

@@ -3,6 +3,7 @@ package com.es.phoneshop.web;
 import com.es.phoneshop.dao.ArrayListProductDao;
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.model.product.util.ProductSearchFilter;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -61,7 +62,7 @@ public class AdvancedSearchPageServlet extends HttpServlet {
         String value = request.getParameter(parameter);
 
         try {
-            if(value == null){
+            if(StringUtils.isEmpty(value)){
                 throw new NullPointerException();
             }
             Integer parsedInteger = Integer.parseInt(value);
@@ -79,7 +80,7 @@ public class AdvancedSearchPageServlet extends HttpServlet {
         String value = request.getParameter(parameter);
 
         try {
-            if(value == null){
+            if(StringUtils.isEmpty(value)){
                 throw new NullPointerException();
             }
             BigDecimal parsedValue = BigDecimal.valueOf(Long.parseLong(value));
@@ -100,7 +101,7 @@ public class AdvancedSearchPageServlet extends HttpServlet {
         return BigDecimal.valueOf(Long.parseLong(value));
     }
 
-    private boolean validate(){
+    private  boolean validate(){
         return true;
     }
 }
