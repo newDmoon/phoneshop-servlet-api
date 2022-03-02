@@ -10,7 +10,7 @@
         </p>
         <c:if test="${not empty errors}">
             <p class="error" id="product-description-text">
-                There were errors placing order
+                There were errors searching
             </p>
         </c:if>
     <form>
@@ -31,9 +31,10 @@
             <th>Price</th>
         </tr>
         </thead>
-        <br/>
         <p class="success">
-
+            <c:if test="${not empty products}">
+                Found ${products.size()} products
+            </c:if>
         </p>
     <c:forEach var="product" items="${products}">
         <tr>

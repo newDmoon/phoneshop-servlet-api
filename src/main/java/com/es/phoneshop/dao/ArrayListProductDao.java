@@ -47,22 +47,27 @@ public class ArrayListProductDao extends ArrayListGenericDao<Product> implements
     public List<Product> findProducts(ProductSearchFilter productSearchFilter) {
         synchronized (lock) {
             List<Product> resultList = getListItems();
-            resultList.stream()
-                    .filter(product -> StringUtils.isEmpty(productSearchFilter.getCode())
-                            || product.getCode().contains(productSearchFilter.getCode()))
-                    .collect(Collectors.toList());
-            resultList.stream()
-                    .filter(product -> StringUtils.isEmpty(productSearchFilter.getCode())
-                            || product.getCode().contains(productSearchFilter.getCode()))
-                    .collect(Collectors.toList());
-            resultList.stream()
-                    .filter(product -> StringUtils.isEmpty(productSearchFilter.getCode())
-                            || product.getCode().contains(productSearchFilter.getCode()))
-                    .collect(Collectors.toList());
-            resultList.stream()
-                    .filter(product -> StringUtils.isEmpty(productSearchFilter.getCode())
-                            || product.getCode().contains(productSearchFilter.getCode()))
-                    .collect(Collectors.toList());
+            if(!StringUtils.isEmpty(productSearchFilter.getCode())){
+                resultList = resultList.stream()
+                        .filter(product -> product.getCode().contains(productSearchFilter.getCode()))
+                        .collect(Collectors.toList());
+            }
+            if (productSearchFilter.getMinStock() >= 0) {
+                resultList = resultList.stream()
+                        .filter(product -> product.getStock() >= productSearchFilter.getMinStock())
+                        .collect(Collectors.toList());
+            }
+
+            if (productSearchFilter.getMinPrice() != null) {
+                resultList = resultList.stream()
+                        .filter(product -> product.getPrice().compareTo(productSearchFilter.getMinPrice()) >= 0)
+                        .collect(Collectors.toList());
+            }
+            if (productSearchFilter.getMaxPrice() != null) {
+                resultList = resultList.stream()
+                        .filter(product -> product.getPrice().compareTo(productSearchFilter.getMaxPrice()) <= 0)
+                        .collect(Collectors.toList());
+            }
             return resultList;
         }
     }

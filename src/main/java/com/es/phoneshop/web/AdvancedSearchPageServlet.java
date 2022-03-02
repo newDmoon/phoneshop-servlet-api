@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.text.html.parser.Parser;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ public class AdvancedSearchPageServlet extends HttpServlet {
     private final String MAX_PRICE_PARAMETER = "maxPrice";
     private final String MIN_STOCK_PARAMETER = "minStock";
     private final String ERRORS_ATTRIBUTE = "errors";
+    private final String ERROR_MESSAGE_NUMBER_FORMAT = "Not a number";
 
     private ProductDao productDao;
     private ProductSearchFilter productSearchFilter;
@@ -66,10 +68,10 @@ public class AdvancedSearchPageServlet extends HttpServlet {
             Integer parsedInteger = parseInteger(value);
             consumer.accept(parsedInteger);
         } catch (NullPointerException e) {
-            consumer.accept(0);
+            consumer.accept(-1);
         } catch (NumberFormatException e) {
-            errors.put(MIN_STOCK_PARAMETER, "Not a number");
-            consumer.accept(0);
+            errors.put(parameter, ERROR_MESSAGE_NUMBER_FORMAT);
+            consumer.accept(null);
         }
     }
 
@@ -79,12 +81,13 @@ public class AdvancedSearchPageServlet extends HttpServlet {
 
         try {
             validateIsEmpty(value);
-            consumer.accept(parseBigDecimal(value));
+            BigDecimal parsedValue = parseBigDecimal(value);
+            consumer.accept(parsedValue);
         } catch (NullPointerException e) {
             consumer.accept(null);
         } catch (NumberFormatException e) {
-            errors.put(MIN_STOCK_PARAMETER, "Not a number");
-            consumer.accept(new BigDecimal(0));
+            errors.put(parameter, ERROR_MESSAGE_NUMBER_FORMAT);
+            consumer.accept(null);
         }
     }
 
