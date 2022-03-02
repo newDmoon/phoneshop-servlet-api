@@ -60,9 +60,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void placeOrder(Order order, HttpServletRequest request) {
-        order.setSecureId(UUID.randomUUID().toString());
-        orderDao.saveItem(order);
-        cartService.clearCart(request);
+        synchronized (lock){
+            order.setSecureId(UUID.randomUUID().toString());
+            orderDao.saveItem(order);
+            cartService.clearCart(request);
+        }
     }
 
     private BigDecimal getDeliveryCost() {
@@ -77,10 +79,12 @@ public class OrderServiceImpl implements OrderService {
         if (cart == null) {
             throw new IllegalArgumentException();
         }
-        order.setCartItems(SerializationUtils.clone((ArrayList<CartItem>) cart.getCartItems()));
-        order.setSubTotal(cart.getTotalCost());
-        order.setDeliveryCost(getDeliveryCost());
-        order.setTotalCost(calculateTotalCost(order.getSubTotal(), order.getDeliveryCost()));
-        return order;
+        synchronized (lock){
+            order.setCartItems(SerializationUtils.clone((ArrayList<CartItem>) cart.getCartItems()));
+            order.setSubTotal(cart.getTotalCost());
+            order.setDeliveryCost(getDeliveryCost());
+            order.setTotalCost(calculateTotalCost(order.getSubTotal(), order.getDeliveryCost()));
+            return order;
+        }
     }
 }

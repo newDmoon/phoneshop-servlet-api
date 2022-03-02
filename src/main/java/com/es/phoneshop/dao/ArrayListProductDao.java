@@ -37,7 +37,7 @@ public class ArrayListProductDao extends ArrayListGenericDao<Product> implements
                     .filter(product -> StringUtils.isEmpty(query) || product.getDescription().contains(query))
                     .filter(product -> product.getPrice() != null)
                     .filter(product -> product.getStock() > 0)
-                    .sorted(ProductComparator.compare(getListItems(), sortField, sortOrder))
+                    .sorted(ProductComparator.compare(sortField, sortOrder))
                     .collect(Collectors.toList());
         }
     }
